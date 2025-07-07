@@ -1,0 +1,495 @@
+Folder PATH listing for volume DATA
+Volume serial number is 1C4C-10CA
+D:.
+|   LICENSE
+|   struct.txt
+|   
++---.vscode
+|       c_cpp_properties.json
+|       extensions.json
+|       keybindings.json
+|       launch.json
+|       settings.json
+|       tasks.json
+|       
++---GONTI
+|   |   LICENSE
+|   |   
+|   \---Source
+|       |   __GONTI_INCLUDES.h
+|       |   
+|       +---Asserts
+|       |       Asserts.c
+|       |       Asserts.h
+|       |       
+|       +---Collisions
+|       |   +---BroadPhase
+|       |   +---Detection
+|       |   +---NarrowPhase
+|       |   \---Resolution
+|       +---Config
+|       |   +---Defaults
+|       |   |       __ENABLEDS.h
+|       |   |       __EngineUserConfig.h
+|       |   |       
+|       |   \---Overrides
+|       +---Constraints
+|       |   +---Anchors
+|       |   +---Distance
+|       |   \---Spring
+|       +---Containers
+|       |   +---DynamicArray
+|       |   |       DynamicArray.c
+|       |   |       DynamicArray.h
+|       |   |       
+|       |   \---DynamicArrayEx
+|       |           DynamicArrayEx.c
+|       |           DynamicArrayEx.h
+|       |           
+|       +---Core
+|       |   +---EntryPoint
+|       |   |   +---DirectX
+|       |   |   |   +---X11
+|       |   |   |   \---X12
+|       |   |   +---OpenGL
+|       |   |   |   +---GLAD
+|       |   |   |   \---GLEW
+|       |   |   \---Vulkan
+|       |   |           VulkanEntry.h
+|       |   |           VulkanEntryTypes.h
+|       |   |           
+|       |   +---Hardware
+|       |   |   +---Device
+|       |   |   |   +---DirectX
+|       |   |   |   |   +---X11
+|       |   |   |   |   \---X12
+|       |   |   |   +---OpenGL
+|       |   |   |   |   +---GLAD
+|       |   |   |   |   \---GLEW
+|       |   |   |   \---Vulkan
+|       |   |   |           VulkanDevice.c
+|       |   |   |           VulkanDevice.h
+|       |   |   |           
+|       |   |   +---LogicalDevice
+|       |   |   |   +---DirectX
+|       |   |   |   |   +---X11
+|       |   |   |   |   \---X12
+|       |   |   |   +---OpenGL
+|       |   |   |   |   +---GLAD
+|       |   |   |   |   \---GLEW
+|       |   |   |   \---Vulkan
+|       |   |   |           VulkanLogicalDevice.c
+|       |   |   |           VulkanLogicalDevice.h
+|       |   |   |           
+|       |   |   \---PhysicalDevice
+|       |   |       +---DirectX
+|       |   |       |   +---X11
+|       |   |       |   \---X12
+|       |   |       +---OpenGL
+|       |   |       |   +---GLAD
+|       |   |       |   \---GLEW
+|       |   |       \---Vulkan
+|       |   |               VulkanPhysicalDevice.c
+|       |   |               VulkanPhysicalDevice.h
+|       |   |               
+|       |   +---MemorySubsystem
+|       |   |       MemorySubsystem.c
+|       |   |       MemorySubsystem.h
+|       |   |       
+|       |   +---Platform
+|       |   |   |   Platform.h
+|       |   |   |   Platform_linux.c
+|       |   |   |   Platform_win32.c
+|       |   |   |   
+|       |   |   +---DirectX
+|       |   |   |   +---X11
+|       |   |   |   \---X12
+|       |   |   +---OpenGL
+|       |   |   |   +---GLAD
+|       |   |   |   \---GLEW
+|       |   |   \---Vulkan
+|       |   |           VulkanPlatform.h
+|       |   |           VulkanPlatform_linux.c
+|       |   |           VulkanPlatform_win32.c
+|       |   |           
+|       |   \---RendererSubsystem
+|       |       +---CommandBuffer
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanCommandBuffer.c
+|       |       |           VulkanCommandBuffer.h
+|       |       |           
+|       |       +---Fence
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanFence.c
+|       |       |           VulkanFence.h
+|       |       |           
+|       |       +---FrameBuffer
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanFramebuffer.c
+|       |       |           VulkanFramebuffer.h
+|       |       |           
+|       |       +---Images
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanImage.c
+|       |       |           VulkanImage.h
+|       |       |           
+|       |       +---Renderer
+|       |       |   +---Backend
+|       |       |   |   |   RendererBackend.c
+|       |       |   |   |   RendererBackend.h
+|       |       |   |   |   
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---X11
+|       |       |   |   |   \---X12
+|       |       |   |   +---OpenGL
+|       |       |   |   |   +---GLAD
+|       |       |   |   |   \---GLEW
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanRendererBackend.c
+|       |       |   |           VulkanRendererBackend.h
+|       |       |   |           
+|       |       |   \---Frontend
+|       |       |       |   RendererFrontend.c
+|       |       |       |   RendererFrontend.h
+|       |       |       |   
+|       |       |       +---DirectX
+|       |       |       |   +---X11
+|       |       |       |   \---X12
+|       |       |       +---OpenGL
+|       |       |       |   +---GLAD
+|       |       |       |   \---GLEW
+|       |       |       \---Vulkan
+|       |       +---Renderpass
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanRenderpass.c
+|       |       |           VulkanRenderpass.h
+|       |       |           
+|       |       +---Swapchain
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanSwapchain.c
+|       |       |           VulkanSwapchain.h
+|       |       |           
+|       |       +---SyncObjects
+|       |       |   +---DirectX
+|       |       |   |   +---X11
+|       |       |   |   \---X12
+|       |       |   +---OpenGL
+|       |       |   |   +---GLAD
+|       |       |   |   \---GLEW
+|       |       |   \---Vulkan
+|       |       |           VulkanSyncObjects.c
+|       |       |           VulkanSyncObjects.h
+|       |       |           
+|       |       \---Types
+|       |           |   RendererTypes.inl
+|       |           |   
+|       |           +---DirectX
+|       |           |   +---X11
+|       |           |   \---X12
+|       |           +---OpenGL
+|       |           |   +---GLAD
+|       |           |   \---GLEW
+|       |           \---Vulkan
+|       |                   VulkanCommandBufferTypes.inl
+|       |                   VulkanContextTypes.inl
+|       |                   VulkanDeviceTypes.inl
+|       |                   VulkanFenceTypes.inl
+|       |                   VulkanFramebufferTypes.inl
+|       |                   VulkanImageTypes.inl
+|       |                   VulkanRenderpassTypes.inl
+|       |                   VulkanSwapchainTypes.inl
+|       |                   
+|       +---Defines
+|       |       Defines.h
+|       |       
+|       +---Dynamics
+|       |   +---Forces
+|       |   +---MassProperties
+|       |   \---Motion
+|       +---Environments
+|       |   +---DirectX
+|       |   |   +---X11
+|       |   |   \---X12
+|       |   +---OpenGL
+|       |   |   +---GLAD
+|       |   |   \---GLEW
+|       |   \---Vulkan
+|       |       +---Application
+|       |       |       VulkanApplication.c
+|       |       |       VulkanApplication.h
+|       |       |       
+|       |       \---Clock
+|       |               Clock.c
+|       |               Clock.h
+|       |               
+|       +---Events
+|       |   |   Events.c
+|       |   |   Events.h
+|       |   |   
+|       |   \---InputSystem
+|       |       +---DirectX
+|       |       |   +---X11
+|       |       |   \---X12
+|       |       +---OpenGL
+|       |       |   +---GLAD
+|       |       |   \---GLEW
+|       |       \---Vulkan
+|       |               VulkanInputs.c
+|       |               VulkanInputs.h
+|       |               
+|       +---Integrators
+|       |   +---Euler
+|       |   +---RungeKutta
+|       |   \---Verlet
+|       +---Libs
+|       |   \---StringLib
+|       |           StringLib.c
+|       |           StringLib.h
+|       |           
+|       +---Materials
+|       |   +---Custom
+|       |   \---Presets
+|       +---Math
+|       |   |   Maths.c
+|       |   |   Maths.h
+|       |   |   
+|       |   +---AES
+|       |   |   +---Decryption
+|       |   |   \---Encryption
+|       |   +---Algebra
+|       |   |   \---BigInteger
+|       |   |           BigInteger.c
+|       |   |           BigInteger.h
+|       |   |           
+|       |   +---Geometry
+|       |   +---GraphTheory
+|       |   |   \---MaxFlow
+|       |   +---Matrices
+|       |   |       Matrices.c
+|       |   |       Matrices.h
+|       |   |       
+|       |   \---Vectors
+|       |           Vectors.c
+|       |           Vectors.h
+|       |           
+|       +---Objects
+|       |   +---Customs
+|       |   \---Defaults
+|       +---PhysicsObjects
+|       |   +---Base
+|       |   +---Particles
+|       |   \---RigidBodies
+|       +---Shapes
+|       |   +---Base
+|       |   +---Boxes
+|       |   +---Circles
+|       |   \---Polygons
+|       +---Solvers
+|       |   +---Constraint
+|       |   \---Impulse
+|       +---SpatialPartitioning
+|       |   +---HashGrid
+|       |   +---QuadTree
+|       |   \---UniformGrid
+|       \---Utilities
+|           +---Build
+|           |   +---linux
+|           |   \---win
+|           |           makeEngine.bat
+|           |           
+|           +---Debug
+|           |   \---BackendDebugger
+|           |       +---DirectX
+|           |       |   +---X11
+|           |       |   \---X12
+|           |       +---OpenGL
+|           |       |   +---GLAD
+|           |       |   \---GLEW
+|           |       \---Vulkan
+|           |               VulkanDebugger.c
+|           |               VulkanDebugger.h
+|           |               
+|           +---Logging
+|           |   \---Scripts
+|           |           Logger.c
+|           |           Logger.h
+|           |           
+|           +---Profiling
+|           +---TypeHelpers
+|           +---Util
+|           |   +---DirectX
+|           |   |   +---X11
+|           |   |   \---X12
+|           |   +---OpenGL
+|           |   |   +---GLAD
+|           |   |   \---GLEW
+|           |   \---Vulkan
+|           |           VulkanUtil.c
+|           |           VulkanUtil.h
+|           |           
+|           \---Validation
+|                   __GraphicsBootstrap.h
+|                   
++---GONTI.GUI
+|   |   LICENSE
+|   |   ___PLANNING....tmp
+|   |   
+|   \---Source
+|       +---Button
+|       +---Fonts
+|       \---Label
++---Tests
+|   |   main.c
+|   |   NOTE.md
+|   |   
+|   +---Integration
+|   |       entry.c
+|   |       eventrec.c
+|   |       eventrec.h
+|   |       game.c
+|   |       game.h
+|   |       
+|   +---Resources
+|   +---Sandbox
+|   +---Unit
+|   \---Util
+|       \---TestbedHost
+|           \---win
+|                   Debug.bat
+|                   makeTestbed.bat
+|                   run.bat
+|                   
++---_Build
+|   +---Include
+|   |   \---GONTI
+|   +---Scripts
+|   |   \---win
+|   |           main.bat
+|   |           make.bat
+|   |           
+|   \---win
+|       +---bin
+|       |   \---GONTI
+|       |           GONTI.dll
+|       |           GONTI.exp
+|       |           GONTI.ilk
+|       |           GONTI.lib
+|       |           GONTI.pdb
+|       |           
+|       \---testbed
+|               GONTI.dll
+|               testbed.exe
+|               testbed.ilk
+|               testbed.pdb
+|               
++---_Docs
+|   \---GONTI SDK
+|       \---GONTI
+|           +---Architecture
+|           |       GONTI_Layout.md
+|           |       
+|           +---Comparisons
+|           |   \---DynamicArrays
+|           |           DynamicArray vs DynamicArrayEx.md
+|           |           
+|           +---Development
+|           |   +---BuildDocs
+|           |   +---CompilerDocs
+|           |   |       Compiler Support.md
+|           |   |       Index.md
+|           |   |       LLVM Toolchain.md
+|           |   |       Why Clang.md
+|           |   |       
+|           |   \---DebugDocs
+|           +---Internals
+|           +---Support
+|           |   +---GraphicsBackends
+|           |   |   +---DirectX
+|           |   |   |   +---X11
+|           |   |   |   \---X12
+|           |   |   +---OpenGL
+|           |   |   |   +---GLAD
+|           |   |   |   \---GLEW
+|           |   |   \---Vulkan
+|           |   \---OperatingSystems
+|           |       +---Linux
+|           |       |       Linux.md
+|           |       |       
+|           |       +---MacOS
+|           |       |       MacOS.md
+|           |       |       
+|           |       \---Windows
+|           |               Windows.md
+|           |               
+|           \---Usage
++---_Logs
+|   +---GONTI
+|   \---GONTI.GUI
++---_Media
+|   \---Assets
+|           gonti_logo.png
+|           
+\---__GONTI SDK WEBSITE
+    |   ___IN_PROCESS....tmp
+    |   
+    \---GONTI SDK
+        +---CSS
+        |   \---Home
+        |           GONTI SDK.css
+        |           
+        +---Docs
+        |   +---Architecture
+        |   +---Comparisons
+        |   +---Development
+        |   +---Internals
+        |   +---Support
+        |   \---Usage
+        +---HTML
+        |   \---Home
+        |           GONTI SDK.html
+        |           
+        +---JS
+        |   \---Home
+        |           GONTI SDK.js
+        |           
+        \---JSON
+            \---Home
+                    eng.json
+                    pl.json
+                    

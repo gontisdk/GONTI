@@ -1,0 +1,63 @@
+{
+    // Code formatting
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 4, ColumnLimit: 0, NamespaceIndentation: All, BreakBeforeBraces: Attach, PointerAlignment: Left, IndentPPDirectives: AfterHash}",
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "left",
+    "C_Cpp.clang_format_sortIncludes": false,
+    "C_Cpp.vcFormat.indent.namespaceContents": true,
+    "C_Cpp.workspaceSymbols": "All",
+
+    // Doxygen file comment settings
+    "doxdocgen.file.fileTag": "@file {name}",
+    "doxdocgen.file.briefTag": "@brief [Short description of this file]",
+    "doxdocgen.generic.authorName": "Sniffer OXlatorty",
+    "doxdocgen.generic.authorEmail": "oxlatorty@outlook.com or gonti.engine@gmail.com",
+    "doxdocgen.generic.authorTag": "@author {author} ({email})",
+    "doxdocgen.file.versionTag": "@version 1.0",
+
+    // Połączone tagi: copyright + license
+    "doxdocgen.file.copyrightTag": [
+        "@copyright GONTI SDK is Copyright (c) Sniffer OXlatorty 2025-{year}",
+        "@license Apache License 2.0"
+    ],
+
+    // Kolejność generowanych tagów
+    "doxdocgen.file.fileOrder": [
+        "file",
+        "brief",
+        "author",
+        "version",
+        "date",
+        "empty",
+        "copyright"
+    ],
+
+    // Terminal & Explorer
+    "terminal.integrated.confirmOnKill": "always",
+    "terminal.integrated.enablePersistentSessions": false,
+    "terminal.integrated.defaultLocation": "view",
+    "terminal.integrated.inheritEnv": false,
+    "terminal.integrated.shellIntegration.enabled": false,
+    "explorer.compactFolders": false,
+    "C_Cpp.dimInactiveRegions": true,
+    "files.associations": {
+        "enableds.h": "c",
+        "vulkanrendererbackend.h": "c",
+        "vulkanplatform.h": "c",
+        "dynamicarrayex.h": "c",
+        "array": "c",
+        "iterator": "c",
+        "list": "c",
+        "vector": "c",
+        "xhash": "c",
+        "xtree": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "span": "c",
+        "utility": "c",
+        "xstring": "c",
+        "xutility": "c"
+    }
+}
