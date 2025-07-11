@@ -464,32 +464,4 @@ D:.
 +---_Media
 |   \---Assets
 |           gonti_logo.png
-|           
-\---__GONTI SDK WEBSITE
-    |   ___IN_PROCESS....tmp
-    |   
-    \---GONTI SDK
-        +---CSS
-        |   \---Home
-        |           GONTI SDK.css
-        |           
-        +---Docs
-        |   +---Architecture
-        |   +---Comparisons
-        |   +---Development
-        |   +---Internals
-        |   +---Support
-        |   \---Usage
-        +---HTML
-        |   \---Home
-        |           GONTI SDK.html
-        |           
-        +---JS
-        |   \---Home
-        |           GONTI SDK.js
-        |           
-        \---JSON
-            \---Home
-                    eng.json
-                    pl.json
                     

@@ -17,9 +17,29 @@ b8 vulkanDeviceCreate(gontiVulkanContext* context) {
     if (!vulkanSelectPhysicalDevice(context)) return false;
 
     vulkanLogicalDeviceInitialize(context);
-    vulkanLogicalDeviceCreate(context);
-    vulkanLogicalDeviceQueuesGet(context);
-    vulkanLogicalDeviceCommandPoolCreateInfo(context);
+    vulkanLogicalDeviceCreate(
+        context->device.physicalDevice, 
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo, 
+        context->allocator, 
+        &context->device.logicalDevice
+    );
+    vulkanLogicalDeviceQueuesGet(
+        context->device.logicalDevice,
+        &context->device.graphicsQueue,
+        context->device.graphicsQueueIndex,
+        &context->device.presentQueue,
+        context->device.presentQueueIndex,
+        &context->device.transferQueue,
+        context->device.transferQueueIndex,
+        &context->device.computeQueue,
+        context->device.computeQueueIndex
+    );
+    vulkanLogicalDeviceCommandPoolCreateInfo(
+        context->device.logicalDevice,
+        context->allocator,
+        context->device.graphicsQueueIndex,
+        &context->device.graphicsCommandPool
+    );
 
     return true;
 }

@@ -14,7 +14,7 @@
 /*PRIVATE*/
 void create(gontiVulkanContext* context, u32 width, u32 height, gontiVulkanSwapchain* swapchain) {
     VkExtent2D swapchainExtent = {width, height};
-    swapchain->maxFramesInFlight = 2;
+    swapchain->maxFramesInFlight = swapchain->imageCount;
 
     b8 found = false;
 

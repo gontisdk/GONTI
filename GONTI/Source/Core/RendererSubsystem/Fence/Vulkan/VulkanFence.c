@@ -12,6 +12,11 @@ b8 vulkanFenceWait(
 ) {
     if (fence->isSignaled) return true;
 
+    if (fence->handle == VK_NULL_HANDLE) {
+        KERROR("vulkanFenceWait() called with null VkFence handle.");
+        return false;
+    }
+
     VkResult result = vkWaitForFences(
         context->device.logicalDevice,
         1,

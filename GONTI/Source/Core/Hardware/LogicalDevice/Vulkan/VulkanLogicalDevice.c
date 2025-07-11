@@ -6,14 +6,19 @@
 #include "../../../MemorySubsystem/MemorySubsystem.h"
 #include "../../../../Utilities/Logging/Scripts/Logger.h"
 
-b8 vulkanLogicalDeviceCreate(gontiVulkanContext* context) {
+b8 vulkanLogicalDeviceCreate(
+    VkPhysicalDevice physicalDevice, 
+    VkDeviceCreateInfo* createInfo, 
+    VkAllocationCallbacks* allocator, 
+    VkDevice* outLogicalDevice
+) {
     KINFO("Creating logical device...");
 
     VK_CHECK(vkCreateDevice(
-        context->device.physicalDevice,
-        &context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo,
-        context->allocator,
-        &context->device.logicalDevice
+        physicalDevice,
+        createInfo,
+        allocator,
+        outLogicalDevice
     ));
 
     return true;
@@ -24,146 +29,217 @@ void vulkanLogicalDeviceInitialize(gontiVulkanContext* context) {
     context->device.vkLdDevice.vkLdQueueSharedSetup.transferSharesGraphicsQueue = context->device.graphicsQueueIndex == context->device.transferQueueIndex;
     context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount = 1;
 
-    vulkanLogicalDeviceSharedSetup(context);
-    vulkanLogicalDeviceQueueCreateInfos(context);
-    vulkanLogicalDeviceConfigDriven(context);
-    vulkanLogicalDeviceDeviceCreateInfo(context);
+    vulkanLogicalDeviceSharedSetup(
+        context->device.vkLdDevice.vkLdQueueSharedSetup.presentSharesGraphicsQueue,
+        context->device.vkLdDevice.vkLdQueueSharedSetup.transferSharesGraphicsQueue,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.indices,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.index,
+        context->device.graphicsQueueIndex,
+        context->device.presentQueueIndex,
+        context->device.transferQueueIndex
+    );
+    vulkanLogicalDeviceQueueCreateInfos(
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.indices,
+        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount,
+        context->device.graphicsQueueIndex
+    );
+    vulkanLogicalDeviceConfigDriven(
+        &context->device.features
+    );
+    vulkanLogicalDeviceDeviceCreateInfo(
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos,
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo,
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.deviceFeatures,
+        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.extensionNames
+    );
 }
-void vulkanLogicalDeviceSharedSetup(gontiVulkanContext* context) {
-    if (!context->device.vkLdDevice.vkLdQueueSharedSetup.presentSharesGraphicsQueue) {
-        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount++;
+void vulkanLogicalDeviceSharedSetup(
+    b8 presentSharesGraphicsQueue,
+    b8 transferSharesGraphicsQueue,
+    u32** indices,
+    u32* indexCount,
+    u32* index,
+    i32 graphicsQueueIndex,
+    i32 presentQueueIndex,
+    i32 transferQueueIndex
+) {
+    if (!presentSharesGraphicsQueue) {
+        (*indexCount)++;
     }
 
-    if (!context->device.vkLdDevice.vkLdQueueSharedSetup.transferSharesGraphicsQueue) {
-        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount++;
+    if (!transferSharesGraphicsQueue) {
+        (*indexCount)++;
     }
 
-    context->device.vkLdDevice.vkLdQueueSharedSetup.indices = k_allocate(context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(u32), MEMORY_TAG_RENDERER);
-    context->device.vkLdDevice.vkLdQueueSharedSetup.index = 0;
+    *indices = k_allocate(*indexCount * sizeof(u32), MEMORY_TAG_RENDERER);
+    *index = 0;
 
-    context->device.vkLdDevice.vkLdQueueSharedSetup.indices[context->device.vkLdDevice.vkLdQueueSharedSetup.index++] = context->device.graphicsQueueIndex;
+    (*indices)[(*index)++] = graphicsQueueIndex;
 
-    if (!context->device.vkLdDevice.vkLdQueueSharedSetup.presentSharesGraphicsQueue) {
-        context->device.vkLdDevice.vkLdQueueSharedSetup.indices[context->device.vkLdDevice.vkLdQueueSharedSetup.index++] = context->device.presentQueueIndex;
+    if (!presentSharesGraphicsQueue) {
+        (*indices)[(*index)++] = presentQueueIndex;
     }
 
-    if (!context->device.vkLdDevice.vkLdQueueSharedSetup.transferSharesGraphicsQueue) {
-        context->device.vkLdDevice.vkLdQueueSharedSetup.indices[context->device.vkLdDevice.vkLdQueueSharedSetup.index++] = context->device.transferQueueIndex;
+    if (!transferSharesGraphicsQueue) {
+        (*indices)[(*index)++] = transferQueueIndex;
     }
 }
-void vulkanLogicalDeviceSharedFree(gontiVulkanContext* context) {
-    if (context->device.vkLdDevice.vkLdQueueSharedSetup.indices) {
-        k_free(context->device.vkLdDevice.vkLdQueueSharedSetup.indices, context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(u32), MEMORY_TAG_RENDERER);
+void vulkanLogicalDeviceSharedFree(u32** indices, u32 indexCount) {
+    if ((*indices)) {
+        k_free((*indices), indexCount * sizeof(u32), MEMORY_TAG_RENDERER);
 
-        context->device.vkLdDevice.vkLdQueueSharedSetup.indices = 0;
+        indices = 0;
     }
 }
-void vulkanLogicalDeviceCommandPoolCreateInfo(gontiVulkanContext* context) {
+void vulkanLogicalDeviceCommandPoolCreateInfo(
+    VkDevice logicalDevice,
+    VkAllocationCallbacks* allocator,
+    i32 graphicsQueueIndex,
+    VkCommandPool* outCommandPool
+) {
     VkCommandPoolCreateInfo poolCreateInfo = {VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
-    poolCreateInfo.queueFamilyIndex = context->device.graphicsQueueIndex;
+    poolCreateInfo.queueFamilyIndex = graphicsQueueIndex;
     poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
     VK_CHECK(vkCreateCommandPool(
-        context->device.logicalDevice,
+        logicalDevice,
         &poolCreateInfo,
-        context->allocator,
-        &context->device.graphicsCommandPool
+        allocator,
+        outCommandPool
     ));
 
     KINFO("Graphics command pool created.");
 }
-void vulkanLogicalDeviceQueueCreateInfos(gontiVulkanContext* context) {
-    context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos = k_allocate(context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(VkDeviceQueueCreateInfo), MEMORY_TAG_RENDERER);
-    context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority = k_allocate(context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(f32), MEMORY_TAG_RENDERER);
+void vulkanLogicalDeviceQueueCreateInfos(
+    VkDeviceQueueCreateInfo** queueCreateInfos,
+    f32** queuePriority,
+    u32** indices,
+    u32 indexCount,
+    i32 graphicsQueueIndex
+) {
+    *queueCreateInfos = k_allocate(indexCount * sizeof(VkDeviceQueueCreateInfo), MEMORY_TAG_RENDERER);
+    *queuePriority = k_allocate(indexCount * sizeof(f32), MEMORY_TAG_RENDERER);
 
-    for (u32 i = 0; i < context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount; i++) {
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].queueFamilyIndex = context->device.vkLdDevice.vkLdQueueSharedSetup.indices[i];
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].queueCount = 1;
+    for (u32 i = 0; i < indexCount; i++) {
+        (*queueCreateInfos)[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        (*queueCreateInfos)[i].queueFamilyIndex = (*indices)[i];
+        (*queueCreateInfos)[i].queueCount = 1;
 
-        if (context->device.vkLdDevice.vkLdQueueSharedSetup.indices[i] == context->device.graphicsQueueIndex) {
-            context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].queueCount = 2;
+        if ((*indices)[i] == graphicsQueueIndex) {
+            (*queueCreateInfos)[i].queueCount = 2;
         }
 
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].flags = 0;
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].pNext = 0;
+        (*queueCreateInfos)[i].flags = 0;
+        (*queueCreateInfos)[i].pNext = 0;
         
-        context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority[i] = 1.0f;
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos[i].pQueuePriorities = &context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority[i];
+        (*queuePriority)[i] = 1.0f;
+        (*queueCreateInfos)[i].pQueuePriorities = &(*queuePriority)[i];
     }
 }
-void vulkanLogicalDeviceQueueFreeInfos(gontiVulkanContext* context) {
-    if (context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos) {
-        k_free(context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos, context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(VkDeviceQueueCreateInfo), MEMORY_TAG_RENDERER);
+void vulkanLogicalDeviceQueueFreeInfos(
+    VkDeviceQueueCreateInfo** queueCreateInfos,
+    f32** queuePriority,
+    u32 indexCount
+) {
+    if (*queueCreateInfos) {
+        k_free(*queueCreateInfos, indexCount * sizeof(VkDeviceQueueCreateInfo), MEMORY_TAG_RENDERER);
 
-        context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos = 0;
+        *queueCreateInfos = 0;
     }
 
-    if (context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority) {
-        k_free(context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority, context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount * sizeof(f32), MEMORY_TAG_RENDERER);
+    if (*queuePriority) {
+        k_free(*queuePriority, indexCount * sizeof(f32), MEMORY_TAG_RENDERER);
 
-        context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority = 0;
+        *queuePriority = 0;
     }
 }
-void vulkanLogicalDeviceConfigDriven(gontiVulkanContext* context) {
+void vulkanLogicalDeviceConfigDriven(
+    VkPhysicalDeviceFeatures* features
+    // TODO: add more 
+) {
     // TODO: should be config driven
-    context->device.features.samplerAnisotropy = VK_TRUE;
+    (*features).samplerAnisotropy = VK_TRUE;
 }
-void vulkanLogicalDeviceDeviceCreateInfo(gontiVulkanContext* context) {
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo = (VkDeviceCreateInfo){VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
+void vulkanLogicalDeviceDeviceCreateInfo(
+    VkDeviceQueueCreateInfo** queueCreateInfos,
+    VkDeviceCreateInfo* deviceCreateInfo,
+    VkPhysicalDeviceFeatures* deviceFeatures,
+    u32 indexCount,
+    const char** extensionNames
+) {
+    *deviceCreateInfo = (VkDeviceCreateInfo){VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.queueCreateInfoCount = context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount;
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.pQueueCreateInfos = context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos;
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.pEnabledFeatures = &context->device.vkLdDevice.vkLdQueueSharedInfo.deviceFeatures;
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.enabledExtensionCount = 1;
+    (*deviceCreateInfo).queueCreateInfoCount = indexCount;
+    (*deviceCreateInfo).pQueueCreateInfos = (*queueCreateInfos);
+    (*deviceCreateInfo).pEnabledFeatures = &(*deviceFeatures);
+    (*deviceCreateInfo).enabledExtensionCount = 1;
 
-    context->device.vkLdDevice.vkLdQueueSharedSetup.extensionNames = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.ppEnabledExtensionNames = &context->device.vkLdDevice.vkLdQueueSharedSetup.extensionNames;
+    *extensionNames = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    (*deviceCreateInfo).ppEnabledExtensionNames = &(*extensionNames);
 
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.enabledLayerCount = 0;
-    context->device.vkLdDevice.vkLdQueueSharedInfo.deviceCreateInfo.ppEnabledLayerNames = 0;
+    (*deviceCreateInfo).enabledLayerCount = 0;
+    (*deviceCreateInfo).ppEnabledLayerNames = 0;
 }
-void vulkanLogicalDeviceQueuesGet(gontiVulkanContext* context) {
+void vulkanLogicalDeviceQueuesGet(
+    VkDevice logicalDevice,
+    VkQueue* graphicsQueue,
+    i32 graphicsQueueIndex,
+    VkQueue* presentQueue,
+    i32 presentQueueIndex,
+    VkQueue* transferQueue,
+    i32 transferQueueIndex,
+    VkQueue* computeQueue,
+    i32 computeQueueIndex
+) {
     vkGetDeviceQueue(
-        context->device.logicalDevice,
-        context->device.graphicsQueueIndex,
+        logicalDevice,
+        graphicsQueueIndex,
         0,
-        &context->device.graphicsQueue
+        graphicsQueue
     );
 
     vkGetDeviceQueue(
-        context->device.logicalDevice,
-        context->device.presentQueueIndex,
+        logicalDevice,
+        presentQueueIndex,
         0,
-        &context->device.presentQueue
+        presentQueue
     );
 
     vkGetDeviceQueue(
-        context->device.logicalDevice,
-        context->device.transferQueueIndex,
+        logicalDevice,
+        transferQueueIndex,
         0,
-        &context->device.transferQueue
+        transferQueue
     );
 
     vkGetDeviceQueue(
-        context->device.logicalDevice,
-        context->device.computeQueueIndex,
+        logicalDevice,
+        computeQueueIndex,
         0,
-        &context->device.computeQueue
+        computeQueue
     );
 }
-void vulkanLogicalDeviceQueuesFree(gontiVulkanContext* context) {
-    context->device.graphicsQueue = 0;
-    context->device.presentQueue = 0;
-    context->device.transferQueue = 0;
-    context->device.computeQueue = 0;
+void vulkanLogicalDeviceQueuesFree(
+    VkQueue* graphicsQueue,
+    VkQueue* presentQueue,
+    VkQueue* transferQueue,
+    VkQueue* computeQueue
+) {
+    *graphicsQueue = 0;
+    *presentQueue = 0;
+    *transferQueue = 0;
+    *computeQueue = 0;
 }
-void vulkanLogicalDeviceDestroy(gontiVulkanContext* context) {
+void vulkanLogicalDeviceDestroy(VkDevice logicalDevice, VkAllocationCallbacks* allocator) {
     KINFO("Vulkan Destroying handle to logical device...");
 
-    if (context->device.logicalDevice) {
-        vkDestroyDevice(context->device.logicalDevice, context->allocator);
-        context->device.logicalDevice = 0;
+    if (logicalDevice) {
+        vkDestroyDevice(logicalDevice, allocator);
+        logicalDevice = 0;
     }
 }
 void vulkanLogicalDeviceRelease(gontiVulkanContext* context) {
@@ -176,10 +252,25 @@ void vulkanLogicalDeviceRelease(gontiVulkanContext* context) {
         context->allocator
     );
 
-    vulkanLogicalDeviceQueuesFree(context);
-    vulkanLogicalDeviceDestroy(context);
-    vulkanLogicalDeviceQueueFreeInfos(context);
-    vulkanLogicalDeviceSharedFree(context);
+    vulkanLogicalDeviceQueuesFree(
+        &context->device.graphicsQueue,
+        &context->device.presentQueue,
+        &context->device.transferQueue,
+        &context->device.computeQueue
+    );
+    vulkanLogicalDeviceDestroy(
+        context->device.logicalDevice,
+        context->allocator
+    );
+    vulkanLogicalDeviceQueueFreeInfos(
+        &context->device.vkLdDevice.vkLdQueueSharedInfo.queueCreateInfos,
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.queuePriority,
+        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount
+    );
+    vulkanLogicalDeviceSharedFree(
+        &context->device.vkLdDevice.vkLdQueueSharedSetup.indices,
+        context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount
+    );
 
     context->device.vkLdDevice.vkLdQueueSharedSetup.index = 0;
     context->device.vkLdDevice.vkLdQueueSharedSetup.indexCount = 0;

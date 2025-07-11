@@ -391,7 +391,7 @@ b8 vulkanRendererBackendEndFrame(gontiRendererBackend* backend, f32 deltaTime) {
     vulkanRenderpassEnd(commandBuffer, &context.mainRenderpass);
     vulkanCommandBufferEnd(commandBuffer);
 
-    if (context.imagesInFlight[context.imageIndex] != VK_NULL_HANDLE) {
+    if (context.imagesInFlight[context.imageIndex]->handle != VK_NULL_HANDLE) {
         vulkanFenceWait(
             &context,
             context.imagesInFlight[context.imageIndex],
@@ -400,7 +400,7 @@ b8 vulkanRendererBackendEndFrame(gontiRendererBackend* backend, f32 deltaTime) {
     }
 
     context.imagesInFlight[context.imageIndex] = &context.inFlightFences[context.currentFrame];
-
+    
     vulkanFenceReset(&context, &context.inFlightFences[context.currentFrame]);
 
     VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
