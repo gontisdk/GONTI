@@ -385,7 +385,7 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
         context.device.logicalDevice,
         context.swapchain.handle,
         UINT64_MAX,
-        context.imageAvailableSemaphores[context.currentFrame % context.swapchain.imageCount],
+        context.imageAvailableSemaphores[context.currentFrame],
         VK_NULL_HANDLE,
         &context.imageIndex
     );
@@ -407,7 +407,7 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
         return false;
     }
 
-    KDEBUG("Acquired image index: %d, will use corresponding semaphores", context.imageIndex);
+    KDEBUG("Acquired image index: %d for frame %d", context.imageIndex, context.currentFrame);
 
     if (context.imagesInFlight[context.imageIndex] != 0) {
         if (!gontiVkFenceWait(&context, context.imagesInFlight[context.imageIndex], UINT64_MAX)) {
@@ -457,6 +457,7 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
 
     return true;
 }
+
 b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) {
     if (context.imageIndex >= context.swapchain.imageCount) {
         KERROR("Invalid image index in EndFrame: %d", context.imageIndex);
@@ -480,10 +481,12 @@ b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) 
     VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer->handle;
+    
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = &context.imageAvailableSemaphores[context.currentFrame];
+    
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &context.queueCompleteSemaphore[context.imageIndex];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &context.imageAvailableSemaphores[context.imageIndex];
 
     VkPipelineStageFlags flags[1] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.pWaitDstStageMask = flags;
@@ -494,9 +497,9 @@ b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) 
         return false;
     }
 
-    KDEBUG("Submitting with image %d semaphores: wait=%p, signal=%p", 
-        context.imageIndex,
-        (void*)context.imageAvailableSemaphores[context.imageIndex],
+    KDEBUG("Submitting frame %d, image %d: wait_sem=%p, signal_sem=%p", 
+        context.currentFrame, context.imageIndex,
+        (void*)context.imageAvailableSemaphores[context.currentFrame],
         (void*)context.queueCompleteSemaphore[context.imageIndex]);
 
     VkResult result = vkQueueSubmit(
