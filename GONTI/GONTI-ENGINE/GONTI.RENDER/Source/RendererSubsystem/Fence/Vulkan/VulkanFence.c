@@ -25,6 +25,7 @@ b8 gontiVkFenceWait(
         (void*)fence->handle, fence->isSignaled ? "true" : "false");
 
     if (fence->isSignaled) {
+        KDEBUG("VK FENCE WAIT - Already marked as signaled, returning true");
         return true;
     }
 
@@ -33,16 +34,22 @@ b8 gontiVkFenceWait(
         1,
         &fence->handle,
         true,
-        0
+        0 
     );
 
     if (quickResult == VK_SUCCESS) {
         fence->isSignaled = true;
-        KDEBUG("VK FENCE WAIT - Already signaled");
+        KDEBUG("VK FENCE WAIT - Already signaled (quick check)");
         return true;
     }
 
-    KDEBUG("VK FENCE WAIT - Fence not signaled, waiting with timeout %llu", timeoutNs);
+    if (timeoutNs == UINT64_MAX) {
+        KWARN("VK FENCE WAIT - Using infinite timeout, this may cause hang!");
+        timeoutNs = 5000000000ULL;
+    }
+
+    KDEBUG("VK FENCE WAIT - Fence not signaled, waiting with timeout %llu ns (%.2f seconds)", 
+        timeoutNs, (double)timeoutNs / 1000000000.0);
 
     VkResult result = vkWaitForFences(
         context->device.logicalDevice,
@@ -58,7 +65,8 @@ b8 gontiVkFenceWait(
             KDEBUG("VK FENCE WAIT - SUCCESS after wait");
             return true;
         case VK_TIMEOUT:
-            KWARN("VK FENCE WAIT - timed out after %llu ns", timeoutNs);
+            KWARN("VK FENCE WAIT - timed out after %llu ns (%.2f seconds)", 
+                timeoutNs, (double)timeoutNs / 1000000000.0);
             return false;
         case VK_ERROR_DEVICE_LOST:
             KERROR("VK FENCE WAIT - VK_ERROR_DEVICE_LOST");

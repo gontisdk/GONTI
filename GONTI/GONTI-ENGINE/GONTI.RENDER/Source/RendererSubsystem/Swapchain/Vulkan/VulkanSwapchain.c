@@ -248,10 +248,6 @@ VkResult gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapcha
         return result;
     }
 
-    if (swapchain->maxFramesInFlight > 0) {
-        context->currentFrame = (context->currentFrame + 1) % swapchain->maxFramesInFlight;
-    }
-
     return result;
 }
 

@@ -410,7 +410,7 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
     KDEBUG("Acquired image index: %d for frame %d", context.imageIndex, context.currentFrame);
 
     if (context.imagesInFlight[context.imageIndex] != 0) {
-        if (!gontiVkFenceWait(&context, context.imagesInFlight[context.imageIndex], UINT64_MAX)) {
+        if (!gontiVkFenceWait(&context, context.imagesInFlight[context.imageIndex], 1000000000ULL)) {
             KWARN("Image in flight fence wait failed");
         }
     }
