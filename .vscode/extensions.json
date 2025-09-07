@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools",
+        "tomphilbin.gruvbox-themes",
+        "wayou.vscode-todo-highlight",
+        "slevesque.shader",
+        "cschlosser.doxdocgen",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "notskm.clang-tidy",
+        "kriegalex.gontiVk-glsl",
+        "eamodio.gitlens",
+        "oderwat.indent-rainbow",
+        "coenraads.bracket-pair-colorizer-2"
+    ]
+}

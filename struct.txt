@@ -1,0 +1,457 @@
+Folder PATH listing for volume DATA
+Volume serial number is 1628-3F99
+D:.
+|   struct.txt
+|   
++---.continue
+|   +---assistants
+|   |       new-assistant.yaml
+|   |       
+|   \---rules
+|           new-rule.md
+|           
++---.vscode
+|       c_cpp_properties.json
+|       extensions.json
+|       keybindings.json
+|       launch.json
+|       settings.json
+|       tasks.json
+|       
++---GONTI
+|   \---GONTI-ENGINE
+|       +---GONTI.AUDIO
+|       |   \---Source
+|       +---GONTI.COLLISIONS
+|       +---GONTI.CORE
+|       |   |   LICENSE
+|       |   |   
+|       |   \---Source
+|       |       +---Asserts
+|       |       |       Asserts.c
+|       |       |       Asserts.h
+|       |       |       
+|       |       +---Containers
+|       |       |   +---DynamicArray
+|       |       |   |       DynamicArray.c
+|       |       |   |       DynamicArray.h
+|       |       |   |       
+|       |       |   \---DynamicArrayEx
+|       |       |           DynamicArrayEx.c
+|       |       |           DynamicArrayEx.h
+|       |       |           
+|       |       +---Defines
+|       |       |       Defines.h
+|       |       |       
+|       |       +---Logging
+|       |       |       Logger.c
+|       |       |       Logger.h
+|       |       |       
+|       |       +---Math
+|       |       |   |   Maths.c
+|       |       |   |   Maths.h
+|       |       |   |   
+|       |       |   +---Algebra
+|       |       |   |   +---BigInteger
+|       |       |   |   |       BigInteger.c
+|       |       |   |   |       BigInteger.h
+|       |       |   |   |       
+|       |       |   |   +---Matrices
+|       |       |   |   |       Matrices.c
+|       |       |   |   |       Matrices.h
+|       |       |   |   |       
+|       |       |   |   \---Vectors
+|       |       |   |           Vectors.c
+|       |       |   |           Vectors.h
+|       |       |   |           
+|       |       |   +---Algorithms
+|       |       |   |   +---AES
+|       |       |   |   |   +---Decryption
+|       |       |   |   |   \---Encryption
+|       |       |   |   +---Arithmetic
+|       |       |   |   |   \---Karatsuba
+|       |       |   |   |           Karatsuba.c
+|       |       |   |   |           Karatsuba.h
+|       |       |   |   |           
+|       |       |   |   \---GraphTheory
+|       |       |   |       \---MaxFlow
+|       |       |   \---Geometry
+|       |       +---Memory
+|       |       |       Memory.c
+|       |       |       Memory.h
+|       |       |       
+|       |       +---Platform
+|       |       |       Platform.h
+|       |       |       Platform_linux.c
+|       |       |       Platform_win32.c
+|       |       |       
+|       |       \---String
+|       |               String.c
+|       |               String.h
+|       |               
+|       +---GONTI.GUI
+|       +---GONTI.PHYSICS
+|       +---GONTI.RENDER
+|       |   \---Source
+|       |       +---Config
+|       |       |   \---SetupGraphicBackend
+|       |       |           UserSetGraphicBackend.h
+|       |       |           
+|       |       +---Debugger
+|       |       |   +---DirectX
+|       |       |   |   +---11
+|       |       |   |   \---12
+|       |       |   +---OpenGL
+|       |       |   \---Vulkan
+|       |       |           VulkanDebugger.c
+|       |       |           VulkanDebugger.h
+|       |       |           
+|       |       +---Hardware
+|       |       |   +---Device
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanDevice.c
+|       |       |   |           VulkanDevice.h
+|       |       |   |           
+|       |       |   +---LogicalDevice
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanLogicalDevice.c
+|       |       |   |           VulkanLogicalDevice.h
+|       |       |   |           
+|       |       |   +---PhysicalDevice
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanPhysicalDevice.c
+|       |       |   |           VulkanPhysicalDevice.h
+|       |       |   |           
+|       |       |   \---Types
+|       |       |       +---DirectX
+|       |       |       |   +---11
+|       |       |       |   \---12
+|       |       |       +---OpenGL
+|       |       |       \---Vulkan
+|       |       |               VulkanDeviceTypes.inl
+|       |       |               VulkanLogicalDeviceTypes.inl
+|       |       |               VulkanPhysicalDeviceTypes.inl
+|       |       |               
+|       |       +---Platform
+|       |       |   +---DirectX
+|       |       |   |   +---11
+|       |       |   |   \---12
+|       |       |   +---OpenGL
+|       |       |   \---Vulkan
+|       |       |           VulkanPlatform.h
+|       |       |           VulkanPlatform_linux.c
+|       |       |           VulkanPlatform_win32.c
+|       |       |           
+|       |       +---Renderer
+|       |       |   +---Backend
+|       |       |   |   |   RenderBackend.c
+|       |       |   |   |   RenderBackend.h
+|       |       |   |   |   
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanRenderBackend.c
+|       |       |   |           VulkanRenderBackend.h
+|       |       |   |           
+|       |       |   +---Frontend
+|       |       |   |   |   RenderFrontend.c
+|       |       |   |   |   RenderFrontend.h
+|       |       |   |   |   
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   \---Types
+|       |       |           RenderTypes.inl
+|       |       |           
+|       |       +---RendererSubsystem
+|       |       |   +---CommandBuffer
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanCommandBuffer.c
+|       |       |   |           VulkanCommandBuffer.h
+|       |       |   |           
+|       |       |   +---Fence
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanFence.c
+|       |       |   |           VulkanFence.h
+|       |       |   |           
+|       |       |   +---FrameBuffer
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanFrameBuffer.c
+|       |       |   |           VulkanFrameBuffer.h
+|       |       |   |           
+|       |       |   +---Images
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanImages.c
+|       |       |   |           VulkanImages.h
+|       |       |   |           
+|       |       |   +---Renderpass
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanRenderpass.c
+|       |       |   |           VulkanRenderpass.h
+|       |       |   |           
+|       |       |   +---Swapchain
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanSwapchain.c
+|       |       |   |           VulkanSwapchain.h
+|       |       |   |           
+|       |       |   +---SyncObjects
+|       |       |   |   +---DirectX
+|       |       |   |   |   +---11
+|       |       |   |   |   \---12
+|       |       |   |   +---OpenGL
+|       |       |   |   \---Vulkan
+|       |       |   |           VulkanSyncObjects.c
+|       |       |   |           VulkanSyncObjects.h
+|       |       |   |           
+|       |       |   \---Types
+|       |       |       +---DirectX
+|       |       |       |   +---11
+|       |       |       |   \---12
+|       |       |       +---OpenGL
+|       |       |       \---Vulkan
+|       |       |               VulkanCommandBufferTypes.inl
+|       |       |               VulkanFenceTypes.inl
+|       |       |               VulkanFrameBufferTypes.inl
+|       |       |               VulkanImageTypes.inl
+|       |       |               VulkanRenderpassTypes.inl
+|       |       |               VulkanSwapchainTypes.inl
+|       |       |               
+|       |       +---Types
+|       |       |   +---DirectX
+|       |       |   |   +---11
+|       |       |   |   \---12
+|       |       |   +---OpenGL
+|       |       |   \---Vulkan
+|       |       |           VulkanContextTypes.inl
+|       |       |           
+|       |       +---Util
+|       |       |   +---DirectX
+|       |       |   |   +---11
+|       |       |   |   \---12
+|       |       |   +---OpenGL
+|       |       |   \---Vulkan
+|       |       |           VulkanUtil.c
+|       |       |           VulkanUtil.h
+|       |       |           
+|       |       \---__Validation
+|       |           \---__ValidationGraphicBackend
+|       |                   __UserCurrentGraphicBackendValidation.h
+|       |                   
+|       \---GONTI.RUNTIME
+|           \---Source
+|               +---Application
+|               |   +---DirectX
+|               |   |   +---11
+|               |   |   \---12
+|               |   +---OpenGL
+|               |   \---Vulkan
+|               |           VulkanApplication.c
+|               |           VulkanApplication.h
+|               |           
+|               +---Clock
+|               |   |   ClockTypes.inl
+|               |   |   
+|               |   +---DirectX
+|               |   |   +---11
+|               |   |   \---12
+|               |   +---OpenGL
+|               |   \---Vulkan
+|               |           VulkanClock.c
+|               |           VulkanClock.h
+|               |           
+|               +---EntryPoint
+|               |   +---DirectX
+|               |   |   +---11
+|               |   |   \---12
+|               |   +---OpenGL
+|               |   \---Vulkan
+|               |           VulkanEntry.h
+|               |           VulkanEntryTypes.inl
+|               |           
+|               \---Events
+|                   |   Events.c
+|                   |   Events.h
+|                   |   EventTypes.inl
+|                   |   
+|                   +---InputSystem
+|                   |       Inputs.c
+|                   |       Inputs.h
+|                   |       InputTypes.inl
+|                   |       
+|                   \---Platform
+|                           PlatformEvents.h
+|                           PlatformEvents_linux.c
+|                           PlatformEvents_win32.c
+|                           
++---GONTI++
++---Tests
+|   |   main.c
+|   |   NOTE.md
+|   |   
+|   +---UserCode
+|   |       events.c
+|   |       events.h
+|   |       game.c
+|   |       game.h
+|   |       
+|   +---UserSetupEngine
+|   |       entry.c
+|   |       entry.h
+|   |       
+|   \---Util
+|       \---TestbedHost
+|           \---win
+|                   Debug.bat
+|                   makeTestbed.bat
+|                   run.bat
+|                   
++---_Build
+|   +---Include
+|   |   \---GONTI
+|   |       \---GONTI-ENGINE
+|   |           +---GONTI.AUDIO
+|   |           +---GONTI.CORE
+|   |           +---GONTI.RENDER
+|   |           \---GONTI.RUNTIME
+|   +---win
+|   |   +---bin
+|   |   |   \---GONTI
+|   |   |       \---GONTI-ENGINE
+|   |   |           +---GONTI.AUDIO
+|   |   |           |       GONTI.AUDIO.dll
+|   |   |           |       GONTI.AUDIO.ilk
+|   |   |           |       GONTI.AUDIO.pdb
+|   |   |           |       
+|   |   |           +---GONTI.CORE
+|   |   |           |       GONTI.CORE.dll
+|   |   |           |       GONTI.CORE.exp
+|   |   |           |       GONTI.CORE.ilk
+|   |   |           |       GONTI.CORE.lib
+|   |   |           |       GONTI.CORE.pdb
+|   |   |           |       
+|   |   |           +---GONTI.RENDER
+|   |   |           |       GONTI.RENDER.dll
+|   |   |           |       GONTI.RENDER.exp
+|   |   |           |       GONTI.RENDER.ilk
+|   |   |           |       GONTI.RENDER.lib
+|   |   |           |       GONTI.RENDER.pdb
+|   |   |           |       
+|   |   |           \---GONTI.RUNTIME
+|   |   |                   GONTI.RUNTIME.dll
+|   |   |                   GONTI.RUNTIME.exp
+|   |   |                   GONTI.RUNTIME.ilk
+|   |   |                   GONTI.RUNTIME.lib
+|   |   |                   GONTI.RUNTIME.pdb
+|   |   |                   
+|   |   \---testbed
+|   |           GONTI.CORE.dll
+|   |           GONTI.RENDER.dll
+|   |           GONTI.RUNTIME.dll
+|   |           testbed.exe
+|   |           testbed.ilk
+|   |           testbed.pdb
+|   |           
+|   \---__Scripts
+|       \---win
+|           |   main.bat
+|           |   make.bat
+|           |   
+|           \---__GONTI
+|               |   main.bat
+|               |   
+|               \---__GONTI-ENGINE
+|                       main.bat
+|                       make_GONTI.AUDIO.bat
+|                       make_GONTI.CORE.bat
+|                       make_GONTI.RENDER.bat
+|                       make_GONTI.RUNTIME.bat
+|                       
++---_Docs
+|   \---GONTI SDK
+|       \---GONTI
+|           +---Architecture
+|           |       GONTI_Layout.md
+|           |       
+|           +---Comparisons
+|           |   \---DynamicArrays
+|           |           DynamicArray vs DynamicArrayEx.md
+|           |           
+|           +---Development
+|           |   +---BuildDocs
+|           |   +---CompilerDocs
+|           |   |       Compiler Support.md
+|           |   |       Index.md
+|           |   |       LLVM Toolchain.md
+|           |   |       Why Clang.md
+|           |   |       
+|           |   \---DebugDocs
+|           +---Internals
+|           +---Support
+|           |   +---GraphicsBackends
+|           |   |   +---DirectX
+|           |   |   |   +---X11
+|           |   |   |   \---X12
+|           |   |   +---OpenGL
+|           |   |   \---Vulkan
+|           |   \---OperatingSystems
+|           |       +---Linux
+|           |       |       Linux.md
+|           |       |       
+|           |       +---MacOS
+|           |       |       MacOS.md
+|           |       |       
+|           |       \---Windows
+|           |               Windows.md
+|           |               
+|           \---Usage
++---_Logs
+|   +---GONTI
+|   |       error_vkAcquireNextImageKHR_InvalidSemaphore.log
+|   |       error_vkWaitForFences_InvalidFence.log
+|   |       NEW_VK_ERROR.log
+|   |       
+|   \---GONTI.GUI
+\---_Media
+    \---Assets
+            gonti_logo.png
+            

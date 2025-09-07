@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Overdrive 2069 (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/_Build/win/testbed/testbed.exe",
+      "cwd": "${workspaceFolder}/_Build/win/testbed/",
+      "console": "externalTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Launch Overdrive 2069 (Linux)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/overdrive2069.kapp",
+      "cwd": "${workspaceFolder}/bin/",
+      "MIMode": "gdb",
+      "externalConsole": true,
+      "stopAtEntry": false
+    },
+    {
+      "name": "Launch Overdrive 2069 (macOS)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/overdrive2069.kapp",
+      "cwd": "${workspaceFolder}/bin/",
+      "MIMode": "lldb",
+      "targetArchitecture": "arm64",
+      "externalConsole": true,
+      "stopAtEntry": false
+    }
+  ]
+}

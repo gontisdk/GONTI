@@ -1,0 +1,252 @@
+[INFO]: Input subsystem initialized
+[INFO]: Event system initialized
+[DEBUG]: Required extensions:
+[DEBUG]: VK_KHR_surface
+[DEBUG]: VK_KHR_win32_surface
+[DEBUG]: VK_EXT_debug_utils
+[DEBUG]: Validation layers enabled. Enumerating...
+[DEBUG]: Searching for layer: VK_LAYER_KHRONOS_validation...
+[DEBUG]: Found Successfully
+[DEBUG]: All requred validation layers are present.
+[INFO]: Vulkan Instance created
+[DEBUG]: Creating Vulkan debugger...
+[DEBUG]: Vulkan debugger created.
+[INFO]: Creating Vulkan surface...
+[INFO]: Vulkan surface created.
+[INFO]:  Graphics | Present  | Compute | Transfer | Name
+[INFO]:         1 |        1 |       1 |        1 | AMD Radeon RX 7900 XTX
+[INFO]: Device meets queue requirements.
+[TRACE]: Graphics Family Index: 0
+[TRACE]: Present Family Index: 1
+[TRACE]: Transfer Family Index: 2
+[TRACE]: Compute Family Index: 1
+[INFO]: Selected device: 'AMD Radeon RX 7900 XTX'.
+[INFO]: GPU type is discrete
+[INFO]: GPU Driver version 2.2.353
+[INFO]: Vulkan API version 1.1.315
+[INFO]: Shared system memory: 31.55 GiB
+[INFO]: Local GPU memory: 23.98 GiB
+[INFO]: Physical device selected
+[INFO]: Creating logical device...
+[INFO]: Graphics command pool created.
+[INFO]: Creating Vulkan swapchain...
+[INFO]: Swapchain created successfully.
+[INFO]: Creating Vulkan renderpass...
+[INFO]: Vulkan renderpass created successfully
+[INFO]: Vulkan creating framebuffers...
+[INFO]: Vulkan framebuffer created.
+[INFO]: Vulkan creating framebuffers...
+[INFO]: Vulkan framebuffer created.
+[INFO]: Vulkan creating framebuffers...
+[INFO]: Vulkan framebuffer created.
+[INFO]: Creating Vulkan command buffers...
+[INFO]: Vulkan command buffers created
+[INFO]: Creating Vulkan Sync Objects...
+[INFO]: Vulkan renderer initialized successfully
+[DEBUG]: gameInitialize() called!
+[INFO]: System memory use (tagged):
+  UNKNOWN:.................................-> 0.00B
+  ARRAY:...................................-> 0.00B
+  ARRAYEX:.................................-> 0.00B
+  DARRAY:..................................-> 6.54KiB
+  DARRAYEX:................................-> 0.00B
+  DICT:....................................-> 0.00B
+  RING_QUEUE:..............................-> 0.00B
+  BST:.....................................-> 0.00B
+  STRING:..................................-> 0.00B
+  APPLICATION:.............................-> 0.00B
+  JOB:.....................................-> 0.00B
+  TEXTURE:.................................-> 0.00B
+  MAT_INST:................................-> 0.00B
+  WINDOW:..................................-> 24.00B
+  RENDERER:................................-> 3.43KiB
+  ENTRY:...................................-> 4.00B
+  TRANSFORM:...............................-> 0.00B
+  ENTITY:..................................-> 0.00B
+  ENTITY_MODE:.............................-> 0.00B
+  SCENE:...................................-> 0.00B
+  MATH:....................................-> 0.00B
+  VECTOR:..................................-> 0.00B
+  MATRIX:..................................-> 0.00B
+  BIGINTEGER...............................-> 0.00B
+
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkSemaphore Object 0x9000240045d579a6. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkFence Object 0x88001a0045a1794a. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkSemaphore Object 0x9000240045d579a6. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkFence Object 0x88001a0045a1794a. This should not happen and may indicate a bug in the application.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkSemaphore Object 0x9000240045d579a6. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkFence Object 0x88001a0045a1794a. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkSemaphore Object 0x9000240045d579a6. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkFence Object 0x88001a0045a1794a. This should not happen and may indicate a bug in the application.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Couldn't find VkSemaphore Object 0x9000240045d579a6. This should not happen and may indicate a bug in the application.
+[ERROR]: ##[{VK DEBUGGER}]##: (Warning - This VUID has now been reported 10 times, which is the duplicated_message_limit value, this will be the last time reporting it).
+vkAcquireNextImageKHR(): Couldn't find VkFence Object 0x88001a0045a1794a. This should not happen and may indicate a bug in the application.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 3 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 4 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 5 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 6 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 7 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 8 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: (Warning - This VUID has now been reported 10 times, which is the duplicated_message_limit value, this will be the last time reporting it).
+vkAcquireNextImageKHR(): semaphore Invalid VkSemaphore Object 0x9000240045d579a6.
+The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, semaphore must be a valid VkSemaphore handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: (Warning - This VUID has now been reported 10 times, which is the duplicated_message_limit value, this will be the last time reporting it).
+vkAcquireNextImageKHR(): fence Invalid VkFence Object 0x88001a0045a1794a.
+The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be a valid VkFence handle (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-fence-parameter)
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 9 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: vkAcquireNextImageKHR(): Application has already previously acquired 10 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: ##[{VK DEBUGGER}]##: (Warning - This VUID has now been reported 10 times, which is the duplicated_message_limit value, this will be the last time reporting it).
+vkAcquireNextImageKHR(): Application has already previously acquired 11 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
+The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://vulkan.lunarg.com/doc/view/1.4.321.1/windows/antora/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[ERROR]: Vulkan Swapchain Acquire Next Image Index failed.
+[DEBUG]: Destroying Vulkan debugger...
+[INFO]: Destroying Vulkan Sync Objects...
+[INFO]: Destroying Vulkan command buffers...
+[INFO]: Destroying Vulkan framebuffers...
+[INFO]: Destroying Vulkan renderpass...
+[INFO]: Destroying Vulkan swapchain...
+[INFO]: Destroying handle to device...
+[INFO]: Release device resources...
+[INFO]: Release physical device resources...
+[INFO]: Release logical device resources...
+[INFO]: Destroying command pools...
+[INFO]: Vulkan Destroying handle to logical device...
+[INFO]: Destroying Vulkan surface...
+[INFO]: Destroying Vulkan Instance...
+[INFO]: All destroyed successfully
