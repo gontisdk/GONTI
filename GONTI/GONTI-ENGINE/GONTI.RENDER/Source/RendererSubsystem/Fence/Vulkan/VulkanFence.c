@@ -24,7 +24,9 @@ b8 gontiVkFenceWait(
     KDEBUG("VK FENCE WAIT - Waiting for fence handle: %p, isSignaled: %s", 
         (void*)fence->handle, fence->isSignaled ? "true" : "false");
 
-    if (fence->isSignaled) return true;
+    if (fence->isSignaled) {
+        return true;
+    }
 
     VkResult quickResult = vkWaitForFences(
         context->device.logicalDevice,
@@ -53,23 +55,23 @@ b8 gontiVkFenceWait(
     switch (result) {
         case VK_SUCCESS:
             fence->isSignaled = true;
-            KDEBUG("VK FENCE WAIT - SUCCESS");
+            KDEBUG("VK FENCE WAIT - SUCCESS after wait");
             return true;
         case VK_TIMEOUT:
-            KWARN("VK FENCE WAIT - timed out");
-            break;
+            KWARN("VK FENCE WAIT - timed out after %llu ns", timeoutNs);
+            return false;
         case VK_ERROR_DEVICE_LOST:
             KERROR("VK FENCE WAIT - VK_ERROR_DEVICE_LOST");
-            break;
+            return false;
         case VK_ERROR_OUT_OF_HOST_MEMORY:
             KERROR("VK FENCE WAIT - VK_ERROR_OUT_OF_HOST_MEMORY");
-            break;
+            return false;
         case VK_ERROR_OUT_OF_DEVICE_MEMORY:
             KERROR("VK FENCE WAIT - VK_ERROR_OUT_OF_DEVICE_MEMORY");
-            break;
+            return false;
         default:
-            KERROR("VK FENCE WAIT - An unknown error has occurred: %d", result);
-            break;
+            KERROR("VK FENCE WAIT - Unknown error: %d", result);
+            return false;
     }
 
     return false;
@@ -134,6 +136,8 @@ void gontiVkFenceReset(GontiVulkanContext* context, GontiVulkanFence* fence) {
         } else {
             KERROR("VK FENCE RESET - Failed to reset fence! VkResult: %d", result);
         }
+    } else {
+        KDEBUG("VK FENCE RESET - Fence already not signaled, skipping reset");
     }
 }
 

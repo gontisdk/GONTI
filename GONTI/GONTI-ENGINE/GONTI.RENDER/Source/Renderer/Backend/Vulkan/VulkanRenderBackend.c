@@ -61,14 +61,14 @@ void createCommandBuffers(GontiRendererBackend* backend) {
                 context.device.graphicsCommandPool,
                 &context.graphicsCommandBuffers[i]
             );
-            k_zeroMemory(&context.graphicsCommandBuffers[i], sizeof(GontiVulkanCommandBuffer));
-            gontiVkCommandBufferAllocate(
-                &context,
-                context.device.graphicsCommandPool,
-                true,
-                &context.graphicsCommandBuffers[i]
-            );
         }
+        
+        gontiVkCommandBufferAllocate(
+            &context,
+            context.device.graphicsCommandPool,
+            true,
+            &context.graphicsCommandBuffers[i]
+        );
     }
 
     KINFO("Vulkan command buffers created");
@@ -172,7 +172,7 @@ b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* a
         return false;
     }
 
-    platState->get_frame_buffer_size_ptr(&cachedFramebufferWidth, &cachedFramebufferWidth);
+    platState->get_frame_buffer_size_ptr(&cachedFramebufferWidth, &cachedFramebufferHeight);
     context.framebufferWidth = (cachedFramebufferWidth != 0) ? cachedFramebufferWidth : 800;
     context.framebufferHeight = (cachedFramebufferHeight != 0) ? cachedFramebufferHeight : 600;
     cachedFramebufferWidth = 0;
@@ -334,30 +334,26 @@ b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* a
 b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime) {
     GontiVulkanDevice* device = &context.device;
 
-    // POPRAWKA: Sprawdź czy currentFrame jest w prawidłowych granicach
     if (context.currentFrame >= context.swapchain.maxFramesInFlight) {
         KERROR("currentFrame (%d) is out of bounds (max: %d)", 
             context.currentFrame, context.swapchain.maxFramesInFlight);
-        return false;
+        context.currentFrame = 0;
     }
 
     if (context.swapchain.recreatingSwapchain) {
         VkResult result = vkDeviceWaitIdle(device->logicalDevice);
-
         if (!gontiVkUtilResultIsSuccess(result)) {
-            KERROR("In func gontiVkRendererBackendBeginFrame(), vkDeviceWaitIdle (1) failed: '%s'", gontiVkUtilResultToString(result, true));
+            KERROR("vkDeviceWaitIdle (1) failed: '%s'", gontiVkUtilResultToString(result, true));
             return false;
         }
-
         KINFO("Recreating swapchain, booting.");
         return false;
     }
 
     if (context.framebufferSizeGeneration != context.framebufferSizeLastGeneration) {
         VkResult result = vkDeviceWaitIdle(device->logicalDevice);
-        
         if (!gontiVkUtilResultIsSuccess(result)) {
-            KERROR("In func gontiVkRendererBackendBeginFrame(), vkDeviceWaitIdle (2) failed: '%s'", gontiVkUtilResultToString(result, true));
+            KERROR("vkDeviceWaitIdle (2) failed: '%s'", gontiVkUtilResultToString(result, true));
             return false;
         }
 
@@ -365,50 +361,66 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
             KERROR("Recreating swapchain failed.");
             return false;
         }
-
         KINFO("Resized, booting...");
         return false;
     }
 
     GontiVulkanFence* currentFence = &context.inFlightFences[context.currentFrame];
-    KDEBUG("BeginFrame: Using fence %d with handle %p", 
-        context.currentFrame, (void*)currentFence->handle);
-
-    if (currentFence->handle == VK_NULL_HANDLE) {
-        KERROR("Current fence (%d) has NULL handle!", context.currentFrame);
+    if (!currentFence || currentFence->handle == VK_NULL_HANDLE) {
+        KERROR("Current fence (%d) is invalid!", context.currentFrame);
         return false;
     }
 
-    if (!gontiVkFenceWait(&context, currentFence, 1000000000)) {
+    KDEBUG("BeginFrame: Using fence %d with handle %p", 
+        context.currentFrame, (void*)currentFence->handle);
+
+    if (!gontiVkFenceWait(&context, currentFence, 1000000000ULL)) {
         KWARN("In-flight fence wait failure!");
         return false;
     }
 
     gontiVkFenceReset(&context, currentFence);
 
-    if (gontiVkSwapchainAcquireNextImageIndex(
-        &context,
-        &context.swapchain,
+    VkResult acquireResult = vkAcquireNextImageKHR(
+        context.device.logicalDevice,
+        context.swapchain.handle,
         UINT64_MAX,
-        context.imageAvailableSemaphores[context.currentFrame],
+        context.imageAvailableSemaphores[context.currentFrame % context.swapchain.imageCount],
         VK_NULL_HANDLE,
         &context.imageIndex
-    )) {
-        KERROR("Vulkan Swapchain Acquire Next Image Index failed.");
+    );
+
+    if (acquireResult == VK_ERROR_OUT_OF_DATE_KHR) {
+        KINFO("Swapchain out of date, recreating...");
+        if (!recreateSwapchain(backend)) {
+            KERROR("Failed to recreate swapchain");
+            return false;
+        }
+        return false;
+    } else if (acquireResult != VK_SUCCESS && acquireResult != VK_SUBOPTIMAL_KHR) {
+        KERROR("Failed to acquire swapchain image! Result: %d", acquireResult);
         return false;
     }
 
-    if (context.imagesInFlight[context.imageIndex] != 0) {
-        gontiVkFenceWait(
-            &context,
-            context.imagesInFlight[context.imageIndex],
-            UINT64_MAX
-        );
+    if (context.imageIndex >= context.swapchain.imageCount) {
+        KERROR("Invalid image index: %d (max: %d)", context.imageIndex, context.swapchain.imageCount);
+        return false;
     }
 
+    KDEBUG("Acquired image index: %d, will use corresponding semaphores", context.imageIndex);
+
+    if (context.imagesInFlight[context.imageIndex] != 0) {
+        if (!gontiVkFenceWait(&context, context.imagesInFlight[context.imageIndex], UINT64_MAX)) {
+            KWARN("Image in flight fence wait failed");
+        }
+    }
     context.imagesInFlight[context.imageIndex] = currentFence;
 
     GontiVulkanCommandBuffer* commandBuffer = &context.graphicsCommandBuffers[context.imageIndex];
+    if (!commandBuffer || commandBuffer->handle == VK_NULL_HANDLE) {
+        KERROR("Invalid command buffer for image %d", context.imageIndex);
+        return false;
+    }
 
     gontiVkCommandBufferReset(commandBuffer);
     gontiVkCommandBufferBegin(commandBuffer, false, false, false);
@@ -432,6 +444,11 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
     context.mainRenderpass.w = context.framebufferWidth;
     context.mainRenderpass.h = context.framebufferHeight;
 
+    if (context.swapchain.framebuffers[context.imageIndex].handle == VK_NULL_HANDLE) {
+        KERROR("Invalid framebuffer for image %d", context.imageIndex);
+        return false;
+    }
+
     gontiVkRenderpassBegin(
         commandBuffer,
         &context.mainRenderpass,
@@ -441,27 +458,52 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
     return true;
 }
 b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) {
+    if (context.imageIndex >= context.swapchain.imageCount) {
+        KERROR("Invalid image index in EndFrame: %d", context.imageIndex);
+        return false;
+    }
+
     GontiVulkanCommandBuffer* commandBuffer = &context.graphicsCommandBuffers[context.imageIndex];
+    if (!commandBuffer || commandBuffer->handle == VK_NULL_HANDLE) {
+        KERROR("Invalid command buffer in EndFrame");
+        return false;
+    }
 
     gontiVkRenderpassEnd(commandBuffer, &context.mainRenderpass);
     gontiVkCommandBufferEnd(commandBuffer);
+
+    if (context.currentFrame >= context.swapchain.maxFramesInFlight) {
+        KERROR("Invalid currentFrame in EndFrame: %d", context.currentFrame);
+        return false;
+    }
 
     VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer->handle;
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &context.queueCompleteSemaphore[context.currentFrame];
+    submitInfo.pSignalSemaphores = &context.queueCompleteSemaphore[context.imageIndex];
     submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &context.imageAvailableSemaphores[context.currentFrame];
+    submitInfo.pWaitSemaphores = &context.imageAvailableSemaphores[context.imageIndex];
 
     VkPipelineStageFlags flags[1] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.pWaitDstStageMask = flags;
+
+    GontiVulkanFence* currentFence = &context.inFlightFences[context.currentFrame];
+    if (!currentFence || currentFence->handle == VK_NULL_HANDLE) {
+        KERROR("Invalid fence for submit in EndFrame");
+        return false;
+    }
+
+    KDEBUG("Submitting with image %d semaphores: wait=%p, signal=%p", 
+        context.imageIndex,
+        (void*)context.imageAvailableSemaphores[context.imageIndex],
+        (void*)context.queueCompleteSemaphore[context.imageIndex]);
 
     VkResult result = vkQueueSubmit(
         context.device.graphicsQueue,
         1,
         &submitInfo,
-        context.inFlightFences[context.currentFrame].handle
+        currentFence->handle
     );
 
     if (result != VK_SUCCESS) {
@@ -470,16 +512,19 @@ b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) 
     }
 
     gontiVkCommandBufferUpdateSubmitted(commandBuffer);
-    gontiVkSwapchainPresent(
+    
+    VkResult presentResult = gontiVkSwapchainPresent(
         &context,
         &context.swapchain,
         context.device.graphicsQueue,
         context.device.presentQueue,
-        context.queueCompleteSemaphore[context.currentFrame],
+        context.queueCompleteSemaphore[context.imageIndex],
         context.imageIndex
     );
 
-    return true;
+    context.currentFrame = (context.currentFrame + 1) % context.swapchain.maxFramesInFlight;
+
+    return presentResult == VK_SUCCESS || presentResult == VK_SUBOPTIMAL_KHR;
 }
 
 void gontiVkRendererBackendShutdown(GontiRendererBackend* backend) {

@@ -24,7 +24,7 @@
                 KAPI void gontiVkSwapchainCreate(GontiVulkanContext* context, u32 width, u32 height, GontiVulkanSwapchain* outSwapchain);
                 KAPI void gontiVkSwapchainRecreate(GontiVulkanContext* context, u32 width, u32 height, GontiVulkanSwapchain* swapchain);
                 KAPI void gontiVkSwapchainDestroy(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain);
-                KAPI void gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, u32 presentImageIndex);
+                KAPI VkResult gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, u32 presentImageIndex);
 
             #endif
 

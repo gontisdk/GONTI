@@ -166,8 +166,13 @@ void destroy(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain) {
 
 /*PUBLIC*/
 
-b8 gontiVkSwapchainAcquireNextImageIndex(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, u64 timeoutNs, VkSemaphore imageAnavibleSemaphore, VkFence fence, u32* outImageIndex) {
-    if (imageAnavibleSemaphore == VK_NULL_HANDLE) {
+b8 gontiVkSwapchainAcquireNextImageIndex(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, u64 timeoutNs, VkSemaphore imageAvailableSemaphore, VkFence fence, u32* outImageIndex) {
+    if (!context || !swapchain || !outImageIndex) {
+        KERROR("Invalid parameters in gontiVkSwapchainAcquireNextImageIndex");
+        return false;
+    }
+
+    if (imageAvailableSemaphore == VK_NULL_HANDLE) {
         KERROR("Invalid semaphore handle passed to vkAcquireNextImageKHR");
         return false;
     }
@@ -176,16 +181,28 @@ b8 gontiVkSwapchainAcquireNextImageIndex(GontiVulkanContext* context, GontiVulka
         context->device.logicalDevice, 
         swapchain->handle, 
         timeoutNs, 
-        imageAnavibleSemaphore, 
+        imageAvailableSemaphore, 
         fence,
         outImageIndex
     );
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        KINFO("Swapchain out of date, recreating...");
         gontiVkSwapchainRecreate(context, context->framebufferWidth, context->framebufferHeight, swapchain);
         return false;
-    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-        KFATAL("Failed to acquire swapchain image! Result: %d", result);
+    } else if (result == VK_SUBOPTIMAL_KHR) {
+        KWARN("Swapchain suboptimal but continuing...");
+        return true;
+    } else if (result == VK_TIMEOUT) {
+        KERROR("Timeout acquiring swapchain image");
+        return false;
+    } else if (result != VK_SUCCESS) {
+        KERROR("Failed to acquire swapchain image! Result: %d", result);
+        return false;
+    }
+
+    if (*outImageIndex >= swapchain->imageCount) {
+        KERROR("Acquired invalid image index: %d (max: %d)", *outImageIndex, swapchain->imageCount);
         return false;
     }
 
@@ -202,7 +219,17 @@ void gontiVkSwapchainRecreate(GontiVulkanContext* context, u32 width, u32 height
 void gontiVkSwapchainDestroy(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain) {
     destroy(context, swapchain);
 }
-void gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, u32 presentImageIndex) {
+VkResult gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, VkQueue graphicsQueue, VkQueue presentQueue, VkSemaphore renderCompleteSemaphore, u32 presentImageIndex) {
+    if (!context || !swapchain || !presentQueue || renderCompleteSemaphore == VK_NULL_HANDLE) {
+        KERROR("Invalid parameters in gontiVkSwapchainPresent");
+        return VK_ERROR_INITIALIZATION_FAILED;
+    }
+
+    if (presentImageIndex >= swapchain->imageCount) {
+        KERROR("Invalid present image index: %d (max: %d)", presentImageIndex, swapchain->imageCount);
+        return VK_ERROR_VALIDATION_FAILED_EXT;
+    }
+
     VkPresentInfoKHR presentInfo = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = &renderCompleteSemaphore;
@@ -214,12 +241,18 @@ void gontiVkSwapchainPresent(GontiVulkanContext* context, GontiVulkanSwapchain* 
     VkResult result = vkQueuePresentKHR(presentQueue, &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        KINFO("Swapchain out of date or suboptimal, will recreate");
         gontiVkSwapchainRecreate(context, context->framebufferWidth, context->framebufferHeight, swapchain);
     } else if (result != VK_SUCCESS) {
-        KFATAL("Failed to present swapchain image!");
+        KERROR("Failed to present swapchain image! Result: %d", result);
+        return result;
     }
 
-    context->currentFrame = (context->currentFrame + 1) % swapchain->maxFramesInFlight;
+    if (swapchain->maxFramesInFlight > 0) {
+        context->currentFrame = (context->currentFrame + 1) % swapchain->maxFramesInFlight;
+    }
+
+    return result;
 }
 
 #endif
