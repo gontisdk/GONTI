@@ -16,7 +16,11 @@ The **GONTI** engine does **not support macOS** for several critical reasons, bo
 
 The entire engine is **designed, developed, and maintained by one person**, responsible for:
 
+<<<<<<< HEAD
 - Cross-Platform compatibility,
+=======
+- Cross-platform compatibility,
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 - Performance and optimization,
 - Code structure and organization,
 - Documentation and examples,
@@ -44,4 +48,8 @@ Due to the reasons outlined above, **macOS is not and will not be supported**, u
 
 ---
 
+<<<<<<< HEAD
 *This decision ensures the stability, integrity, and maintainability of the GONTI SDK.*
+=======
+*This decision ensures the stability, integrity, and maintainability of the GONTI engine.*
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a

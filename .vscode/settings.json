@@ -1,11 +1,19 @@
 {
     // Code formatting
+<<<<<<< HEAD
     "C_Cpp.clang_forgontiMat_style": "{ BasedOnStyle: LLVM, IndentWidth: 4, ColumnLimit: 0, NamespaceIndentation: All, BreakBeforeBraces: Attach, PointerAlignment: Left, IndentPPDirectives: AfterHash}",
+=======
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 4, ColumnLimit: 0, NamespaceIndentation: All, BreakBeforeBraces: Attach, PointerAlignment: Left, IndentPPDirectives: AfterHash}",
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
     "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "sameLine",
     "C_Cpp.vcFormat.space.pointerReferenceAlignment": "left",
+<<<<<<< HEAD
     "C_Cpp.clang_forgontiMat_sortIncludes": false,
+=======
+    "C_Cpp.clang_format_sortIncludes": false,
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
     "C_Cpp.vcFormat.indent.namespaceContents": true,
     "C_Cpp.workspaceSymbols": "All",
 
@@ -44,8 +52,13 @@
     "C_Cpp.dimInactiveRegions": true,
     "files.associations": {
         "enableds.h": "c",
+<<<<<<< HEAD
         "gontiVkrendererbackend.h": "c",
         "gontiVkgontiPlatform.h": "c",
+=======
+        "vulkanrendererbackend.h": "c",
+        "vulkanplatform.h": "c",
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
         "dynamicarrayex.h": "c",
         "array": "c",
         "iterator": "c",
@@ -58,6 +71,7 @@
         "span": "c",
         "utility": "c",
         "xstring": "c",
+<<<<<<< HEAD
         "xutility": "c",
         "xiosbase": "c",
         "vulkangontiPlatform.h": "c",
@@ -86,3 +100,8 @@
         "platformevents.h": "c"
     },
 }
+=======
+        "xutility": "c"
+    }
+}
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a

@@ -24,9 +24,19 @@ You can choose either backend depending on your needs. Both are maintained and i
 The following graphics APIs are available under Linux:
 
 | API       | Supported | Notes                                            |
+<<<<<<< HEAD
 | OpenGL    | ✅        | via system libraries + GLAD/GLEW                |
 | Vulkan    | ✅        | requires Vulkan SDK (`libgontiVk-dev`, etc.)     |
 | DirectX   | ❌        | Not available on Linux (X11 and X12)            |
+=======
+|-----------|-----------|--------------------------------------------------|
+| OpenGL    | ✅        | via system libraries + GLAD/GLEW                |
+|-----------|-----------|--------------------------------------------------|
+| Vulkan    | ✅        | requires Vulkan SDK (`libvulkan-dev`, etc.)     |
+|-----------|-----------|--------------------------------------------------|
+| DirectX   | ❌        | Not available on Linux (X11 and X12)            |
+|-----------|-----------|--------------------------------------------------|
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 
 
 ## ⚠️ Limitations
@@ -48,5 +58,9 @@ sudo apt install libgl1-mesa-dev
 ```
 
 ```bash
+<<<<<<< HEAD
 sudo apt install libgontiVk-dev gontiVk-tools
+=======
+sudo apt install libvulkan-dev vulkan-tools
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 ```

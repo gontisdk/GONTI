@@ -107,6 +107,7 @@
         "key": "ctrl+shift+b",
         "command": "workbench.action.tasks.runTask",
         "args": "Run Make.bat"
+<<<<<<< HEAD
     },
     {
         "key": "ctrl+alt+i", 
@@ -119,5 +120,7 @@
     { 
         "key": "ctrl+alt+/", 
         "command": "continue.quickAsk" 
+=======
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
     }
 ]

@@ -18,11 +18,25 @@ The GONTI engine offers **full native support for Microsoft Windows**, covering 
 The engine supports multiple graphics backends under Windows:
 
 | API        | Supported | Notes                                              |
+<<<<<<< HEAD
 | OpenGL     | ✅        | via **GLEW** or **GLAD**                           |
 | DirectX 11 | ✅        | for legacy and modern Windows/Xbox compatibility   |
 | DirectX 12 | ✅        | because performance matters                        |
 | Vulkan     | ✅        | for cutting-edge multi-Platform rendering          |
 | GDI        | ✅        | fallback for basic operations and debugging        |
+=======
+|------------|-----------|-----------------------------------------------------|
+| OpenGL     | ✅        | via **GLEW** or **GLAD**                           |
+|------------|-----------|-----------------------------------------------------|
+| DirectX 11 | ✅        | for legacy and modern Windows/Xbox compatibility   |
+|------------|-----------|-----------------------------------------------------|
+| DirectX 12 | ✅        | because performance matters                        |
+|------------|-----------|-----------------------------------------------------|
+| Vulkan     | ✅        | for cutting-edge multi-platform rendering          |
+|------------|-----------|-----------------------------------------------------|
+| GDI        | ✅        | fallback for basic operations and debugging        |
+|------------|-----------|-----------------------------------------------------|
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 
 Whether you’re rendering particles or resurrecting Win7, we’ve got you covered.
 

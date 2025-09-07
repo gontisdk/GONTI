@@ -43,10 +43,20 @@
         {
             "name": "Win32",
             "includePath": [
+<<<<<<< HEAD
                 "${workspaceFolder}/",
                 
                 /*TODO: Enter here path to your liblares includes for Windows*/
                 "C:/Program Files (x86)/VulkanSDK/1.4.321.1/Include"
+=======
+                "${workspaceFolder}/GONTI/Source/",
+                
+                /*TODO: Enter here path to your liblares includes for Windows*/
+                "D:/Programs Files/vcpkg/vcpkg/installed/x64-windows/include",
+                "D:/Dokumenty/My Liblares to C++/glfw-3.4.bin.WIN64/include"
+                // NOTE: Używamy Vulkan z vcpkg na ten moment
+                //,"D:/Programs Files/VulkanSDK/1.4.313.2/Include"
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
             ],
             "defines": [
                 "_DEBUG",
@@ -55,7 +65,11 @@
                 "KEXPORT"
             ],
             "windowsSdkVersion": "10.0.18362.0",
+<<<<<<< HEAD
             "compilerPath": "C:/Program Files/LLVM/bin/clang.exe",
+=======
+            "compilerPath": "D:/Programs Files/LLVM/bin/clang.exe",
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"

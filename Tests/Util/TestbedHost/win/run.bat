@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 @echo off
 
+=======
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 rem Uruchom plik lub wyjdź
 
 echo(

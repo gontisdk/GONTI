@@ -6,7 +6,11 @@ This is not just a convenience — it's a deliberate decision driven by technica
 
 ## 🎯 Why Clang?
 
+<<<<<<< HEAD
 - **Cross-Platform compatibility**  
+=======
+- **Cross-platform compatibility**  
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
   Clang runs consistently across Linux, Windows, and (theoretically) macOS.
 
 - **Modern diagnostics and tooling**  
@@ -24,9 +28,19 @@ This is not just a convenience — it's a deliberate decision driven by technica
 ## ⚖️ Comparison with Other Compilers
 
 | Compiler  | Status             | Notes                                                           |
+<<<<<<< HEAD
 | **Clang** | ✅ Preferred       | Officially tested, recommended, toolchain-integrated           |
 | **GCC**   | ⚠️ Partially works | Can compile the code, but not officially tested or recommended |
 | **MSVC**  | ❌ Unsupported     | Incompatible with parts of the code, not used or tested        |
+=======
+|-----------|--------------------|-----------------------------------------------------------------|
+| **Clang** | ✅ Preferred       | Officially tested, recommended, toolchain-integrated           |
+|-----------|--------------------|-----------------------------------------------------------------|
+| **GCC**   | ⚠️ Partially works | Can compile the code, but not officially tested or recommended |
+|-----------|--------------------|-----------------------------------------------------------------|
+| **MSVC**  | ❌ Unsupported     | Incompatible with parts of the code, not used or tested        |
+|-----------|--------------------|-----------------------------------------------------------------|
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 
 ## 📌 Summary
 

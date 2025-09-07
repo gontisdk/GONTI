@@ -44,6 +44,7 @@ if not exist "win/testbed" (
 cd win/testbed
 
 rem Ścieżki do bibliotek
+<<<<<<< HEAD
 set vcpkgIncludeDir=C:/Program Files (x86)/VulkanSDK/1.4.321.1/Include
 set vcpkgLibDir=C:/Program Files (x86)/VulkanSDK/1.4.321.1/Lib
 
@@ -51,16 +52,29 @@ set workspaceFoldersInclude=D:\Projects\Visual Studio Code Projects\C++\GONTI SD
 set GONTI-CORE-Libs-Dir=D:\Projects\Visual Studio Code Projects\C++\GONTI SDK\_Build\win\bin\GONTI\GONTI-ENGINE\GONTI.CORE
 set GONTI-RENDER-Libs-Dir=D:\Projects\Visual Studio Code Projects\C++\GONTI SDK\_Build\win\bin\GONTI\GONTI-ENGINE\GONTI.RENDER
 set GONTI-RUNTIME-Libs-Dir=D:\Projects\Visual Studio Code Projects\C++\GONTI SDK\_Build\win\bin\GONTI\GONTI-ENGINE\GONTI.RUNTIME
+=======
+set vcpkgIncludeDir=D:/Programs Files/vcpkg/vcpkg/installed/x64-windows/include
+set vcpkgLibDir=D:/Programs Files/vcpkg/vcpkg/installed/x64-windows/lib
+
+set IncludeDirGLFW=D:/Dokumenty/My Liblares to C++/glfw-3.4.bin.WIN64/include
+set LibDirGLFW=D:/Dokumenty/My Liblares to C++/glfw-3.4.bin.WIN64/lib-vc2022
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 
 rem Kompilacja
 set assembly=testbed
 set compilerFlags=-g
+<<<<<<< HEAD
 set includeFlags=-I"%workspaceFoldersInclude%" -I"%vcpkgIncludeDir%"
 set linkerFlags=-L"..\bin" -L"%GONTI-CORE-Libs-Dir%" -L"%GONTI-RENDER-Libs-Dir%", -L"%GONTI-RUNTIME-Libs-Dir%" -L"%vcpkgLibDir%" -luser32 -lGONTI.CORE -lGONTI.RENDER -lGONTI.RUNTIME -lvulkan-1
+=======
+set includeFlags=-I"GONTI" -I"%vcpkgIncludeDir%" -I"%IncludeDirGLFW%"
+set linkerFlags=-L"..\bin" -lGONTI/GONTI -L"%vcpkgLibDir%" -L"%LibDirGLFW%" -luser32 -lglfw3
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 set defines=-D_DEBUG -DKIMPORT
 
 echo Building %assembly%...
 
+<<<<<<< HEAD
 echo(
 echo(
 
@@ -91,6 +105,16 @@ if %ERRORLEVEL% NEQ 0 (
 echo(
 echo(
 
+=======
+echo Copying GONTI.dll to testbed directory...
+copy "..\bin\GONTI\GONTI.dll" ".\GONTI.dll" /Y > nul
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Failed to copy GONTI.dll!
+) else (
+    echo GONTI.dll copied successfully.
+)
+
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 echo(
 echo(
 echo ======================================================================

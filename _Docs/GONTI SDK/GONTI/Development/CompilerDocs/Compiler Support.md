@@ -9,7 +9,11 @@ GONTI is written in **C**, and is built using **LLVM Clang** as the official and
 - **Minimum version:** `Clang 12`
 - **Tested versions:** 12, 13, 14, 15, 16
 - **Language standard:** `C17`
+<<<<<<< HEAD
 - **Supported Platforms:** Linux and Windows (via MinGW or clang-cl)
+=======
+- **Supported platforms:** Linux and Windows (via MinGW or clang-cl)
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
 
 > Note: Clang is used in **C mode**, but we benefit from its full toolchain — originally designed for C++ — for analysis and formatting.
 

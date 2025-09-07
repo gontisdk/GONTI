@@ -4,7 +4,11 @@
         {
             "label": "Run Make.bat",
             "type": "shell",
+<<<<<<< HEAD
             "command": "${workspaceFolder}/_Build/__Scripts/win/make.bat",
+=======
+            "command": "${workspaceFolder}/_Build/Scripts/win/make.bat",
+>>>>>>> 475c679c815ea5f049414def8adf10b6b1ed375a
             "options": {
                 "shell": {
                     "executable": "cmd.exe",
