@@ -54,6 +54,7 @@
                 #endif
 
                 GontiVulkanInternalStateVK* vkInternalState;
+                void (*get_frame_buffer_size_ptr)(u32* width, u32* height);
                 void* internalState;
             } GontiVulkanPlatformState;
 

@@ -162,11 +162,17 @@ b8 recreateSwapchain(GontiRendererBackend* backend) {
 /*PUBLIC FUNCS*/
 
 b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* appName, struct GontiVulkanPlatformState* platState) {
-    context.findMemoryIndex = findMemoryIndex;
+    k_zeroMemory(&context, sizeof(GontiVulkanContext));
     
+    context.findMemoryIndex = findMemoryIndex;
     context.allocator = 0; // TODO: custom allocator
 
-    //gontiVkApplicationGetFramebufferSizePtr(&cachedFramebufferWidth, &cachedFramebufferWidth); // TODO: make ptr for this
+    if (!platState->get_frame_buffer_size_ptr) {
+        KFATAL("get_frame_buffer_size_ptr is NULL ptr");
+        return false;
+    }
+
+    platState->get_frame_buffer_size_ptr(&cachedFramebufferWidth, &cachedFramebufferWidth);
     context.framebufferWidth = (cachedFramebufferWidth != 0) ? cachedFramebufferWidth : 800;
     context.framebufferHeight = (cachedFramebufferHeight != 0) ? cachedFramebufferHeight : 600;
     cachedFramebufferWidth = 0;
@@ -278,6 +284,14 @@ b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* a
     KINFO("Creating Vulkan swapchain...");
     gontiVkSwapchainCreate(&context, context.framebufferWidth, context.framebufferHeight, &context.swapchain);
 
+    if (context.swapchain.maxFramesInFlight == 0) {
+        KFATAL("Swapchain maxFramesInFlight is 0 after creation!");
+        return false;
+    }
+    
+    KINFO("Creating Vulkan Sync Objects...");
+    gontiVkSyncObjectsCreate(&context);
+
     KINFO("Creating Vulkan renderpass...");
     gontiVkRenderpassCreate(
         &context, &context.mainRenderpass,
@@ -293,14 +307,39 @@ b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* a
     KINFO("Creating Vulkan command buffers...");
     createCommandBuffers(backend);
 
-    KINFO("Creating Vulkan Sync Objects...");
-    gontiVkSyncObjectsCreate(&context);
+    context.currentFrame = 0;
+
+    for (u8 i = 0; i < context.swapchain.maxFramesInFlight; i++) {
+        if (context.inFlightFences[i].handle == VK_NULL_HANDLE) {
+            KFATAL("Failed to create in-flight fence %d", i);
+            return false;
+        }
+        if (context.imageAvailableSemaphores[i] == VK_NULL_HANDLE) {
+            KFATAL("Failed to create image available semaphore %d", i);
+            return false;
+        }
+        if (context.queueCompleteSemaphore[i] == VK_NULL_HANDLE) {
+            KFATAL("Failed to create queue complete semaphore %d", i);
+            return false;
+        }
+        KDEBUG("Sync objects %d created successfully - Fence: %p, ImageSem: %p, QueueSem: %p", 
+            i, (void*)context.inFlightFences[i].handle, 
+            (void*)context.imageAvailableSemaphores[i], 
+            (void*)context.queueCompleteSemaphore[i]);
+    }
 
     KINFO("Vulkan renderer initialized successfully");
     return true;
 }
 b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime) {
     GontiVulkanDevice* device = &context.device;
+
+    // POPRAWKA: Sprawdź czy currentFrame jest w prawidłowych granicach
+    if (context.currentFrame >= context.swapchain.maxFramesInFlight) {
+        KERROR("currentFrame (%d) is out of bounds (max: %d)", 
+            context.currentFrame, context.swapchain.maxFramesInFlight);
+        return false;
+    }
 
     if (context.swapchain.recreatingSwapchain) {
         VkResult result = vkDeviceWaitIdle(device->logicalDevice);
@@ -331,26 +370,43 @@ b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime
         return false;
     }
 
-    if (!gontiVkFenceWait(
-        &context,
-        &context.inFlightFences[context.currentFrame],
-        UINT64_MAX
-    )) {
+    GontiVulkanFence* currentFence = &context.inFlightFences[context.currentFrame];
+    KDEBUG("BeginFrame: Using fence %d with handle %p", 
+        context.currentFrame, (void*)currentFence->handle);
+
+    if (currentFence->handle == VK_NULL_HANDLE) {
+        KERROR("Current fence (%d) has NULL handle!", context.currentFrame);
+        return false;
+    }
+
+    if (!gontiVkFenceWait(&context, currentFence, 1000000000)) {
         KWARN("In-flight fence wait failure!");
         return false;
     }
+
+    gontiVkFenceReset(&context, currentFence);
 
     if (gontiVkSwapchainAcquireNextImageIndex(
         &context,
         &context.swapchain,
         UINT64_MAX,
         context.imageAvailableSemaphores[context.currentFrame],
-        context.inFlightFences[context.currentFrame].handle, // Use the correct fence
+        VK_NULL_HANDLE,
         &context.imageIndex
     )) {
         KERROR("Vulkan Swapchain Acquire Next Image Index failed.");
         return false;
     }
+
+    if (context.imagesInFlight[context.imageIndex] != 0) {
+        gontiVkFenceWait(
+            &context,
+            context.imagesInFlight[context.imageIndex],
+            UINT64_MAX
+        );
+    }
+
+    context.imagesInFlight[context.imageIndex] = currentFence;
 
     GontiVulkanCommandBuffer* commandBuffer = &context.graphicsCommandBuffers[context.imageIndex];
 
@@ -389,17 +445,6 @@ b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime) 
 
     gontiVkRenderpassEnd(commandBuffer, &context.mainRenderpass);
     gontiVkCommandBufferEnd(commandBuffer);
-
-    if (context.imagesInFlight[context.imageIndex]->handle != VK_NULL_HANDLE) {
-        gontiVkFenceWait(
-            &context,
-            context.imagesInFlight[context.imageIndex],
-            UINT64_MAX
-        );
-    }
-    gontiVkFenceReset(&context, &context.inFlightFences[context.currentFrame]);
-    
-    context.imagesInFlight[context.imageIndex] = &context.inFlightFences[context.currentFrame];
 
     VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
     submitInfo.commandBufferCount = 1;

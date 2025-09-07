@@ -28,8 +28,6 @@ b8 gontiVkPlatformStartup(
 
     platState->vkInternalState = k_allocate(sizeof(GontiVulkanInternalStateVK), GONTI_MEMORY_TAG_RENDERER);
 
-    platState->vkInternalState->surface = k_allocate(sizeof(VkSurfaceKHR), GONTI_MEMORY_TAG_RENDERER);
-
     if (state->win32_process_message == NULL) {
         KFATAL("win32_process_message must match WndProc signature. Without it, message handling will fail.");
         gontiVkPlatformShutdown(platState);
@@ -134,13 +132,13 @@ b8 gontiVkPlatformCreateVulkanSurface(GontiVulkanPlatformState* platState, Gonti
     createInfo.hinstance = state->hInstance;
     createInfo.hwnd = state->hwnd;
 
-    VkResult result = vkCreateWin32SurfaceKHR(context->instance, &createInfo, context->allocator, (VkSurfaceKHR*)platState->vkInternalState->surface);
+    VkResult result = vkCreateWin32SurfaceKHR(context->instance, &createInfo, context->allocator, &platState->vkInternalState->surface);
     if (result != VK_SUCCESS) {
         KFATAL("Vulkan surface creation failed!");
         return false;
     }
 
-    context->surface = *(VkSurfaceKHR*)platState->vkInternalState->surface;
+    context->surface = platState->vkInternalState->surface;
     return true;
 }
 
@@ -162,7 +160,6 @@ void gontiVkPlatformShutdown(GontiVulkanPlatformState* platState) {
         k_free(platState->internalState, sizeof(GontiVulkanInternalStateWindows), GONTI_MEMORY_TAG_WINDOW);
 
     if(platState->vkInternalState) {
-        k_free(platState->vkInternalState->surface, sizeof(VkSurfaceKHR), GONTI_MEMORY_TAG_RENDERER);
         k_free(platState->vkInternalState, sizeof(GontiVulkanInternalStateVK), GONTI_MEMORY_TAG_RENDERER);
     }
 }

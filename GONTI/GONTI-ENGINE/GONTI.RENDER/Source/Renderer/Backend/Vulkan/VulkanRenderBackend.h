@@ -18,7 +18,7 @@
             #ifndef UINT64_MAX
                 #define UINT64_MAX 18446744073709551615ULL 
             #endif
-            
+    
             KAPI b8 gontiVkRendererBackendInitialize(GontiRendererBackend* backend, const char* appName, struct GontiVulkanPlatformState* platState);
             KAPI b8 gontiVkRendererBackendBeginFrame(GontiRendererBackend* backend, f32 deltaTime);
             KAPI b8 gontiVkRendererBackendEndFrame(GontiRendererBackend* backend, f32 deltaTime);

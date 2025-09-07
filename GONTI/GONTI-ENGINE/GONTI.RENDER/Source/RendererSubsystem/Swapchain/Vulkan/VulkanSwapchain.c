@@ -12,7 +12,10 @@
 /*PRIVATE*/
 void create(GontiVulkanContext* context, u32 width, u32 height, GontiVulkanSwapchain* swapchain) {
     VkExtent2D swapchainExtent = {width, height};
-    swapchain->maxFramesInFlight = swapchain->imageCount;
+
+    if (!swapchain->images && !swapchain->views) {
+        k_zeroMemory(swapchain, sizeof(GontiVulkanSwapchain));
+    }
 
     b8 found = false;
 
@@ -96,6 +99,15 @@ void create(GontiVulkanContext* context, u32 width, u32 height, GontiVulkanSwapc
 
     VK_CHECK(vkGetSwapchainImagesKHR(context->device.logicalDevice, swapchain->handle, &swapchain->imageCount, 0));
 
+    swapchain->maxFramesInFlight = (swapchain->imageCount > 2) ? 2 : swapchain->imageCount;
+    
+    if (swapchain->maxFramesInFlight == 0) {
+        KERROR("Calculated maxFramesInFlight is 0, setting to 1");
+        swapchain->maxFramesInFlight = 1;
+    }
+    
+    KINFO("Swapchain imageCount: %d, maxFramesInFlight: %d", swapchain->imageCount, swapchain->maxFramesInFlight);
+
     if (!swapchain->images) {
         swapchain->images = k_allocate(swapchain->imageCount * sizeof(VkImage), GONTI_MEMORY_TAG_RENDERER);
     }
@@ -155,13 +167,25 @@ void destroy(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain) {
 /*PUBLIC*/
 
 b8 gontiVkSwapchainAcquireNextImageIndex(GontiVulkanContext* context, GontiVulkanSwapchain* swapchain, u64 timeoutNs, VkSemaphore imageAnavibleSemaphore, VkFence fence, u32* outImageIndex) {
-    VkResult result = vkAcquireNextImageKHR(context->device.logicalDevice, swapchain->handle, timeoutNs, imageAnavibleSemaphore, fence == VK_NULL_HANDLE ? VK_NULL_HANDLE : fence, outImageIndex);
+    if (imageAnavibleSemaphore == VK_NULL_HANDLE) {
+        KERROR("Invalid semaphore handle passed to vkAcquireNextImageKHR");
+        return false;
+    }
+
+    VkResult result = vkAcquireNextImageKHR(
+        context->device.logicalDevice, 
+        swapchain->handle, 
+        timeoutNs, 
+        imageAnavibleSemaphore, 
+        fence,
+        outImageIndex
+    );
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         gontiVkSwapchainRecreate(context, context->framebufferWidth, context->framebufferHeight, swapchain);
         return false;
     } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-        KFATAL("Failed to qcquire swapchain image!");
+        KFATAL("Failed to acquire swapchain image! Result: %d", result);
         return false;
     }
 
