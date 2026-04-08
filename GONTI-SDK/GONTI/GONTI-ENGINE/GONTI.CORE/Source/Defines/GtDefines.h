@@ -225,7 +225,7 @@ extern "C" {
      * @param max The maximum value of the range.
      * @returns The clamped value.
      */
-    #define GTCLAMP(value, min, max) ((value <= min) ? min : (value >= max) ? max : value)
+    #define GT_CLAMP(value, min, max) ((value <= min) ? min : (value >= max) ? max : value)
 
      // Inlining
     #if defined(__clang__) || defined(__gcc__)

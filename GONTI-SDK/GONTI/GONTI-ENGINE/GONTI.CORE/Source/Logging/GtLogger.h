@@ -63,10 +63,10 @@ extern "C" {
     }GtLogLvl;
 
     /*B8*/
-    GTAPI GtB8 gontiLoggerInitializeLogging();
+    GTAPI GtB8 gontiLoggerInitializeLogging(GtU64* memoryRequirement, void* state);
 
     /*VOID*/
-    GTAPI void gontiLoggerShutdownLogging();
+    GTAPI void gontiLoggerShutdown(void* state);
     GTAPI void gontiLoggerLogOutput(GtLogLvl level, const char* message, ...);
 
 #ifdef __cplusplus

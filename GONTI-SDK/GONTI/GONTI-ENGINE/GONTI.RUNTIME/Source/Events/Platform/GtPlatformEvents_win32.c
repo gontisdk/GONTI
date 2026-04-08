@@ -1,8 +1,9 @@
 #include "GtPlatformEvents.h"
 
-#if GONTI_USE_VULKAN && GTPLATFORM_WINDOWS
+#if GTPLATFORM_WINDOWS
 
-#include "../InputSystem/GtInputs.h"
+#include <windowsx.h>
+#include "../../Inputs/GtInputs.h"
 #include "../GtEvents.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, GtU32 msg, WPARAM wParam, LPARAM lParam) {
@@ -34,12 +35,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, GtU32 msg, WPARAM wParam, LPARAM lParam) {
             case WM_SYSKEYDOWN:
             case WM_KEYUP:
             case WM_SYSKEYUP: {
-                GtB8 pressed; //= (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+                GtB8 pressed;
                 if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN) pressed = GtTrue;
                 else pressed = GtFalse;
 
                 GtInputKeyboardKeys key = (GtU16)wParam;
+                GtB8 isExtended = (HIWORD(lParam) & KF_EXTENDED) == KF_EXTENDED;
+
+                if (wParam == VK_MENU) key = isExtended ? GT_KEY_RALT : GT_KEY_LALT;
+                else if (wParam == VK_SHIFT) {
+                    GtU32 lShift = MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+                    GtU32 scancode = ((lParam & (0xFF << 16)) >> 16);
+                    key = scancode == lShift ? GT_KEY_LSHIFT : GT_KEY_RSHIFT;
+                } else if (wParam == VK_CONTROL) key = isExtended ? GT_KEY_RCONTROL : GT_KEY_LCONTROL;
+
                 gontiInputProcessKey(key, pressed);
+                return 0;
             }break;
             case WM_MOUSEMOVE: {
                 GtI32 xPosition = GET_X_LPARAM(lParam);

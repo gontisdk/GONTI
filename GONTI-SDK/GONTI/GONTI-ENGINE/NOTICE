@@ -1,0 +1,28 @@
+GONTI-ENGINE - NOTICE
+
+Copyright (C) 2026 OXlatorty
+
+This collection of modules is part of the GONTI SDK and constitutes 
+the GONTI-ENGINE.
+
+This library is free software: you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public License
+version 3 (LGPL-3.0) as published by the Free Software Foundation.
+
+Author:
+  OXlatorty
+
+Contact:
+  oxlatorty0@gmail.com
+
+Modules included:
+  - All modules and submodules under GONTI-ENGINE
+    (e.g., GONTI.CORE, GONTI.RENDER, GONTI.RENDER.VK, GONTI.RUNTIME)
+
+Notice:
+  This notice applies to the entire GONTI-ENGINE collection. Individual
+  modules may evolve over time (files may be added, removed, or modified),
+  but the licensing and authorship information remains valid for the 
+  collection as a whole.
+
+See the LICENSE files in each module for the full license text.

@@ -9,10 +9,10 @@
 #elif defined(GONTI_USE_DX)
 #endif
 
-/* B8 */
+/* 
+* B8 
+*/
 GtB8 gontiApplicationCreate(GtEntry* entry) {
-    gontiInitializeMemory();
-
     #if defined(GONTI_USE_VK)
         return gontiVkApplicationCreate(entry);
     #endif
@@ -20,17 +20,21 @@ GtB8 gontiApplicationCreate(GtEntry* entry) {
     return GtFalse;
 }
 GtB8 gontiApplicationRun(GtU64 fpsLimit, GtB8 isFpsLimit) {
-    GtB8 result = 0;
-
     #if defined(GONTI_USE_VK)
-        result = gontiVkApplicationRun(fpsLimit, isFpsLimit);
+        return gontiVkApplicationRun(fpsLimit, isFpsLimit);
     #endif
 
-    gontiShutdownMemory();
-    return result;
+    return GtFalse;
 }
 
-/* VOID */
+/* 
+* VOID 
+*/
+void gontiApplicationShutdown() {
+    #if defined(GONTI_USE_VK)
+        gontiVkApplicationShutdown();
+    #endif
+}
 void gontiApplicationPause() {
     #if defined(GONTI_USE_VK)
         gontiVkApplicationPause();
@@ -39,6 +43,16 @@ void gontiApplicationPause() {
 void gontiApplicationResume() {
     #if defined(GONTI_USE_VK)
         gontiVkApplicationResume();
+    #endif
+}
+void gontiApplicationSuspend() {
+    #if defined(GONTI_USE_VK)
+        gontiVkApplicationSuspend();
+    #endif
+}
+void gontiApplicationUnSuspend() {
+    #if defined(GONTI_USE_VK)
+        gontiVkApplicationUnSuspend();
     #endif
 }
 void gontiApplicationSetWidth(GtU32 width) {
@@ -51,8 +65,15 @@ void gontiApplicationSetHeight(GtU32 height) {
         gontiVkApplicationSetHeight(height);
     #endif
 }
+void gontiApplicationOnResized(GtU32 width, GtU32 height) {
+    #if defined(GONTI_USE_VK)
+        gontiVkApplicationOnResized(width, height);
+    #endif
+}
 
-/* GtI16 */
+/* 
+* GtI16 
+*/
 GtI16 gontiApplicationGetWidth() {
     #if defined(GONTI_USE_VK)
         return gontiVkApplicationGetWidth();
@@ -69,6 +90,13 @@ GtI16 gontiApplicationGetHeight() {
 }
 
 /* BOOL/B8 */
+GtB8 gontiApplicationIsSuspended() {
+    #if defined(GONTI_USE_VK)
+        return gontiVkApplicationIsSuspended();
+    #endif
+
+    return GtFalse;
+}
 GtB8 gontiApplicationIsPaused() {
     #if defined(GONTI_USE_VK)
         return gontiVkApplicationIsPaused();

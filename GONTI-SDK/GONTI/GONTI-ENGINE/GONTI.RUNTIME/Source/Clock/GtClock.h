@@ -7,9 +7,9 @@
 
         #include "GtClockTypes.inl"
 
-        GTAPI void gontiVkClockUpdate(Clock* clock);
-        GTAPI void gontiVkClockStart(Clock* clock);
-        GTAPI void gontiVkClockStop(Clock* clock);
+        GTAPI void gontiClockUpdate(GtClock* clock);
+        GTAPI void gontiClockStart(GtClock* clock);
+        GTAPI void gontiClockStop(GtClock* clock);
 
 #ifdef __cplusplus
     }

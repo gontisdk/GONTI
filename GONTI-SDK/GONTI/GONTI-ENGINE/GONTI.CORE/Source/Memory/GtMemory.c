@@ -2,12 +2,12 @@
 
 #include <stdio.h>
 #include "../Platform/GtPlatform.h"
-#include "../String/GtString.h"
+#include "../CStringTools/GtCStrTools.h"
 
 static const char* memoryTagStrings[GT_MEM_TAG_MAX_TAGS] = {
     "UNKNOWN:.................................",
     "ARRAY:...................................",
-    "ARRAYEX:.................................",
+    "LINEAR_ALLOC:............................",
     "DARRAY:..................................",
     "DARRAYEX:................................",
     "DICT:....................................",
@@ -31,13 +31,79 @@ static const char* memoryTagStrings[GT_MEM_TAG_MAX_TAGS] = {
     "BIGINTEGER..............................."
 };
 
-static char* memTagClearArr[GT_MEM_TAG_MAX_TAGS] = {0};
-static GtAllocationHeader* listHead = 0;
-static struct GtMemStats gontiMemoryStats;
+static const char* memTagClearArr[GT_MEM_TAG_MAX_TAGS] = {
+    "UNKNOWN",
+    "ARRAY",
+    "LINEAR_ALLOC",
+    "DARRAY",
+    "DARRAYEX",
+    "DICT",
+    "RING_QUEUE",
+    "BST",
+    "STRING",
+    "APPLICATION",
+    "JOB",
+    "TEXTURE",
+    "MAT_INST",
+    "WINDOW",
+    "RENDERER",
+    "ENTRY",
+    "TRANSFORM",
+    "ENTITY",
+    "ENTITY_MODE",
+    "SCENE",
+    "MATH",
+    "VECTOR",
+    "MATRIX",
+    "BIGINTEGER"
+};
 
-/* CHAR** */
-const char** __gontiGetMemoryTagStringsArr() {
-    return (const char**)memTagClearArr;
+struct GtMemStats {
+    GtU64 totalAllocatedCount;
+    GtU64 taggedAllocations[GT_MEM_TAG_MAX_TAGS];
+};
+
+typedef struct GtMemSysState {
+    struct GtMemStats stats;
+    GtAllocationHeader* listHead;
+    GtU64 allocCount;
+} GtMemSysState;
+static GtMemSysState* statePtr;
+
+/* B8 */
+GtB8 gontiMemoryCheckLeaks() {
+    //if (statePtr) {
+        if (!statePtr->listHead) {
+            GTINFO("Memory shutdown: All clear. No leaks.");
+            return GtFalse;
+        }
+
+        printf("\n");
+        GTERROR("***************************************************");
+        GTERROR("              MEMORY LEAKS DETECTED                ");
+        GTERROR("***************************************************");
+
+        GtAllocationHeader* curr = statePtr->listHead;
+        GtU64 totalLeaked = 0;
+
+        while (curr) {
+            GTERROR(
+                "  -> Leak: %p | Size: %llu B | Tag: %s",
+                (void*)(curr + 1),
+                curr->size,
+                memTagClearArr[curr->tag]
+            );
+
+            totalLeaked += curr->size;
+            curr = curr->next;
+        }
+
+        GTERROR("  TOTAL LEAKED: %.2f KiB", (GtF32)totalLeaked / 1024.0f);
+        GTERROR("***************************************************");
+        printf("\n");
+    //}
+
+    return GtTrue;
 }
 
 /* CHAR* */
@@ -54,19 +120,19 @@ char* gontiGetMemoryUsageStr() {
         char unit[4] = "XiB";
         GtF32 amount = 1.0f;
 
-        if (gontiMemoryStats.taggedAllocations[i] >= gib) {
+        if (statePtr->stats.taggedAllocations[i] >= gib) {
             unit[0] = 'G';
-            amount = gontiMemoryStats.taggedAllocations[i] / (GtF32)gib;
-        } else if (gontiMemoryStats.taggedAllocations[i] >= mib) {
+            amount = statePtr->stats.taggedAllocations[i] / (GtF32)gib;
+        } else if (statePtr->stats.taggedAllocations[i] >= mib) {
             unit[0] = 'M';
-            amount = gontiMemoryStats.taggedAllocations[i] / (GtF32)mib;
-        } else if (gontiMemoryStats.taggedAllocations[i] >= kib) {
+            amount = statePtr->stats.taggedAllocations[i] / (GtF32)mib;
+        } else if (statePtr->stats.taggedAllocations[i] >= kib) {
             unit[0] = 'K';
-            amount = gontiMemoryStats.taggedAllocations[i] / (GtF32)kib;
+            amount = statePtr->stats.taggedAllocations[i] / (GtF32)kib;
         } else {
             unit[0] = 'B';
             unit[1] = 0;
-            amount = (GtF32)gontiMemoryStats.taggedAllocations[i];
+            amount = (GtF32)statePtr->stats.taggedAllocations[i];
         }
 
         if (offset >= bufferSize) break;
@@ -80,50 +146,25 @@ char* gontiGetMemoryUsageStr() {
     return outString;
 }
 
-/*VOID*/
-void gontiInitializeMemory() {
-    gontiPlatformZeroMemory(&gontiMemoryStats, sizeof(struct GtMemStats));
-
-    for (GtU32 i = 0; i < GT_MEM_TAG_MAX_TAGS; i++) {
-        const char* src = memoryTagStrings[i];
-        GtU32 len = 0;
-        while (src[len] != '\0' && src[len] != '.' && src[len] != ':') {
-            len++;
-        }
-        memTagClearArr[i] = (char*)gontiPlatformAllocate(len + 1, GtFalse);
-        gontiPlatformCopyMemory(memTagClearArr[i], src, len);
-        memTagClearArr[i][len] = '\0';
-    }
+/* U64 */
+GtU64 gontiMemoryGetAllocCount() {
+    return statePtr->allocCount;
 }
-void gontiShutdownMemory() {
-    if (listHead != 0) {
-        printf("\n");
-        GTERROR("****************************************************");
-        GTERROR("          MEMORY LEAKS DETECTED IN ENGINE           ");
-        GTERROR("****************************************************");
-        
-        GtAllocationHeader* curr = listHead;
-        GtU64 totalLeaked = 0;
-        while (curr) {
-            GTERROR("  -> Leak: %p | Size: %llu B | Tag: %s", 
-                    (void*)(curr + 1), curr->size, memTagClearArr[curr->tag]);
-            totalLeaked += curr->size;
-            curr = curr->next;
-        }
-        GTERROR("  TOTAL LEAKED: %.2f KiB", (GtF32)totalLeaked / 1024.0f);
-        GTERROR("****************************************************");
-        printf("\n");
-    } else {
-        printf("\n");
-        GTINFO("Memory shutdown: All clear. No leaks.");
-        printf("\n");
-    }
 
-    for (GtU32 i = 0; i < GT_MEM_TAG_MAX_TAGS; i++) {
-        if (memTagClearArr[i]) gontiPlatformFree(memTagClearArr[i], GtFalse);
-    }
+/*VOID*/
+void gontiMemoryInitialize(GtU64* memoryRequirement, void* state) {
+    *memoryRequirement = sizeof(GtMemSysState);
+    if (!state) return;
 
-    gontiPlatformZeroMemory(&gontiMemoryStats, sizeof(struct GtMemStats));
+    statePtr = state;
+    statePtr->listHead = 0;
+    statePtr->allocCount = 0;
+    gontiPlatformZeroMemory(&statePtr->stats, sizeof(statePtr->stats));
+}
+void gontiMemoryShutdown(void* state) {
+    gontiMemoryCheckLeaks();
+    gontiPlatformZeroMemory(&statePtr->stats, sizeof(statePtr->stats));
+    statePtr = 0;
 }
 void __gontiMemoryFree(void* block) {
     if (block == 0) return;
@@ -134,11 +175,12 @@ void __gontiMemoryFree(void* block) {
         return;
     }
 
+    if (statePtr) {
     if (header->prev) {
         header->prev->next = header->next;
     } else {
-        if (listHead == header) {
-            listHead = header->next;
+        if (statePtr->listHead == header) {
+            statePtr->listHead = header->next;
         }
     }
 
@@ -147,10 +189,13 @@ void __gontiMemoryFree(void* block) {
     }
 
     if (header->tag < GT_MEM_TAG_MAX_TAGS) {
-        gontiMemoryStats.totalAllocatedCount -= 1;
-        gontiMemoryStats.taggedAllocations[header->tag] -= header->size;
+        statePtr->stats.totalAllocatedCount -= 1;
+        statePtr->stats.taggedAllocations[header->tag] -= header->size;
     } else {
         GTWARN("__gontiMemoryFree: Invalid tag on block %p. Stats might be incorrect.", block);
+    }
+
+    statePtr->allocCount--;
     }
 
     header->_magic = 0;
@@ -158,6 +203,11 @@ void __gontiMemoryFree(void* block) {
     header->prev = 0;
 
     gontiPlatformFree(header, GtFalse);
+}
+
+/* CHAR** */
+const char** __gontiGetMemoryTagStringsArr() {
+    return (const char**)memTagClearArr;
 }
 
 /* VOID* */
@@ -178,14 +228,20 @@ void* __gontiMemoryAllocate(GtU64 size, GtMemTag memTag) {
     header->_magic = 0xDEADBEEF;
 
     header->prev = 0;
-    header->next = listHead;
-    if (listHead) {
-        listHead->prev = header;
-    }
-    listHead = header;
 
-    gontiMemoryStats.totalAllocatedCount += 1;
-    gontiMemoryStats.taggedAllocations[memTag] += size;
+    if (statePtr) {
+    header->next = statePtr->listHead;
+
+    if (statePtr->listHead) {
+        statePtr->listHead->prev = header;
+    }
+    statePtr->listHead = header;
+
+    statePtr->stats.totalAllocatedCount += 1;
+    statePtr->stats.taggedAllocations[memTag] += size;
+
+    statePtr->allocCount++;
+    }
 
     void* block = (void*)(header + 1);
     gontiPlatformZeroMemory(block, size);
@@ -214,8 +270,6 @@ void* __gontiMemoryReallocate(void* block, GtU64 newSize) {
         return 0;
     }
 
-    //GtAllocationHeader* oldPrev = oldHeader->prev;
-    //GtAllocationHeader* oldNext = oldHeader->next;
     GtMemTag tag = oldHeader->tag;
     GtU64 oldSize = oldHeader->size;
 
@@ -227,15 +281,17 @@ void* __gontiMemoryReallocate(void* block, GtU64 newSize) {
         return 0;
     }
 
-    gontiMemoryStats.taggedAllocations[tag] -= oldSize;
-    gontiMemoryStats.taggedAllocations[tag] += newSize;
+    if (statePtr) {
+    statePtr->stats.taggedAllocations[tag] -= oldSize;
+    statePtr->stats.taggedAllocations[tag] += newSize;
     newHeader->size = newSize;
 
     if (newHeader != oldHeader) {
         if (newHeader->prev) newHeader->prev->next = newHeader;
-        else listHead = newHeader;
+        else statePtr->listHead = newHeader;
         if (newHeader->next) newHeader->next->prev = newHeader;
         
+    }
     }
 
     return (void*)(newHeader + 1);

@@ -7,10 +7,10 @@
 
         #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Defines/GtDefines.h>
 
-        typedef struct Clock {
+        typedef struct GtClock {
             GtF64 startTime;
             GtF64 elapsed;
-        }Clock;
+        }GtClock;
 
 #ifdef __cplusplus
     }

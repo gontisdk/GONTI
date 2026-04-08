@@ -8,10 +8,13 @@
         #include "../../Types/GtVkContextTypes.inl"
         #include "../../Platform/GtVkPlatform.h"
     
+        /* B8 */
+        GTAPI GtB8 gontiVkRendererBackendRecreateSwapchain(GtVkContext* context);
         GTAPI GtB8 gontiVkRendererBackendInitialize(const char* appName, GtVkPlatformState* platState);
         GTAPI GtB8 gontiVkRendererBackendBeginFrame(GtF32 deltaTime);
         GTAPI GtB8 gontiVkRendererBackendEndFrame(GtF32 deltaTime);
 
+        /* VOID */
         GTAPI void gontiVkRendererBackendShutdown();
         GTAPI void gontiVkRendererBackendOnResized(GtU16 width, GtU16 height);
 

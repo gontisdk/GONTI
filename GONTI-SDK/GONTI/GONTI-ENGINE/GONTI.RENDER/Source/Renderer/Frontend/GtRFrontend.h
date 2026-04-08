@@ -12,11 +12,11 @@
         struct GontiStaticMeshData;
         struct GtVkPlatformState;
 
-        GTAPI GtB8 gontiRendererInitialize(const char* appName, GtVkPlatformState* platState);
+        GTAPI GtB8 gontiRendererInitialize(GtU64* memoryRequirement, void* state, const char* appName, GtVkPlatformState* platState);
         GTAPI GtB8 gontiRendererBeginFrame(GtF32 deltaTime);
         GTAPI GtB8 gontiRendererEndFrame(GtF32 deltaTime);
-        GTAPI GtB8 gontiRendererDrawFrame(GontiRendererPacket* packet);
-        GTAPI void gontiRendererShutdown();
+        GTAPI GtB8 gontiRendererDrawFrame(GtRendererPacket* packet);
+        GTAPI void gontiRendererShutdown(void* state);
         GTAPI void gontiRendererOnResized(GtU16 width, GtU16 height);
 
 #ifdef __cplusplus 

@@ -13,7 +13,7 @@ extern "C" {
             #include <intrin.h>
             #define debugBreak() __debugbreak()
         #else
-            #define debugBreak() __bulitin_trap()
+            #define debugBreak() __builtin_trap()
         #endif
 
         GTAPI void gontiReportAssertionFailure(const char* expression, const char* message, const char* file, GtI32 line);

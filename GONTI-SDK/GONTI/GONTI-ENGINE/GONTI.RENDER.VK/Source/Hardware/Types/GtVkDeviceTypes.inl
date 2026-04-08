@@ -7,7 +7,7 @@
         
         #include "GtVkLDeviceTypes.inl"
         #include "GtVkPDeviceTypes.inl"
-        #include "../../RendererSubsystem/Types/GtVkSwapchainTypes.inl"
+        #include "../../Subsystems/Types/GtVkSwapchainTypes.inl"
 
         typedef struct GtVkDeviceInfo{
             VkPhysicalDeviceProperties properties;

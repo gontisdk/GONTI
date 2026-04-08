@@ -1,0 +1,11 @@
+GONTI SDK - README
+
+Copyright (C) 2026 OXlatorty
+
+This project is primarily licensed under the Apache License 2.0.
+
+All files in the root directory of this project are licensed under Apache 2.0, unless otherwise specified.
+
+Some modules within this project are licensed separately under the GNU Lesser General Public License version 3 (LGPL-3.0). These modules have their own LICENSE and NOTICE files that detail their specific licensing terms.
+
+Please refer to the individual module directories for full details.

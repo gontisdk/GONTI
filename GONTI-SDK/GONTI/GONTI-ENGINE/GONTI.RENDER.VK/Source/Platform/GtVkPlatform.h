@@ -37,7 +37,7 @@
 
                 xcb_generic_event_t* event; 
                 xcb_client_message_event_t* clientMessage;
-                GtB8 (*linux_process_message)(GtVkInternalStateLINUX gontiVkInternalStateLinux);
+                GtB8 (*linux_process_message)(void* platState);
             } GtVkInternalStateLINUX;
         #endif
 
@@ -49,13 +49,14 @@
                 GtVkInternalStateLINUX gontiVkInternalStateLinux;
             #endif
 
-            GtVkInternalStateVK* vkInternalState;
+            GtVkInternalStateVK vkInternalState;
             void (*get_frame_buffer_size_ptr)(GtU32* width, GtU32* height);
             void* internalState;
         } GtVkPlatformState;
 
         GTAPI GtB8 gontiVkPlatformStartup(
-            GtVkPlatformState* platState,
+            GtU64* memoryRequirement, 
+            void* platState,
             const char* windowName,
             const char* windowClass,
             GtI32 x,
@@ -64,10 +65,10 @@
             GtI32 height
         );
 
-        GTAPI GtB8 gontiVkPlatformPumpMessage(GtVkPlatformState* platState);
+        GTAPI GtB8 gontiVkPlatformPumpMessage(void* platState);
         GTAPI GtB8 gontiVkPlatformCreateVulkanSurface(GtVkPlatformState* platState, GtVkContext* context);
 
-        GTAPI void gontiVkPlatformShutdown(GtVkPlatformState* platState);
+        GTAPI void gontiVkPlatformShutdown(void* platState);
         GTAPI void gontiVkPlatformGetRequiredExtensionNames(const char*** namesDarray);
 
 #ifdef __cplusplus

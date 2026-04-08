@@ -5,8 +5,8 @@
       "name": "Launch Overdrive 2069 (Windows)",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/Tests/Build/testbed.exe",
-      "cwd": "${workspaceFolder}/Tests/Build/",
+      "program": "${workspaceFolder}/Testbed/Build/testbed.exe",
+      "cwd": "${workspaceFolder}/Testbed/Build/",
       "console": "externalTerminal",
       "stopAtEntry": false
     },
@@ -14,8 +14,8 @@
       "name": "Launch Overdrive 2069 (Linux)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/overdrive2069.kapp",
-      "cwd": "${workspaceFolder}/bin/",
+      "program": "${workspaceFolder}/Testbed/Build/testbed",
+      "cwd": "${workspaceFolder}/Testbed/Build/",
       "MIMode": "gdb",
       "externalConsole": true,
       "stopAtEntry": false

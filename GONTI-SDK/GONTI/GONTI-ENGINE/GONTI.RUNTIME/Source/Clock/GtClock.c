@@ -2,15 +2,15 @@
 
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Platform/GtPlatform.h>
 
-void gontiVkClockUpdate(Clock* clock) {
+void gontiClockUpdate(GtClock* clock) {
     if (clock->startTime != 0) {
         clock->elapsed = gontiPlatformGetAbsoluteTime() - clock->startTime;
     }
 }
-void gontiVkClockStart(Clock* clock) {
+void gontiClockStart(GtClock* clock) {
     clock->startTime = gontiPlatformGetAbsoluteTime();
     clock->elapsed = 0;
 }
-void gontiVkClockStop(Clock* clock) {
+void gontiClockStop(GtClock* clock) {
     clock->startTime = 0;
 }

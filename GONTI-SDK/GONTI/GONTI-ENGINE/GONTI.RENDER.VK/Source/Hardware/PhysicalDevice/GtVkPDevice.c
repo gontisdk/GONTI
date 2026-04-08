@@ -1,7 +1,7 @@
 #include "GtVkPDevice.h"
 
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
-#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/String/GtString.h>
+#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/CStringTools/GtCStrTools.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Memory/GtMemory.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Containers/DynamicArray/GtDArray.h>
 
@@ -250,9 +250,9 @@ GtB8 gontiVkNumeratePhysicalDevices(GtVkContext* context) {
             context->device.transferQueueIndex = queueInfo.transferFamilyIndex;
             context->device.computeQueueIndex = queueInfo.computeFamilyIndex;
 
-            context->device.properties = context->device.vkDeviceInfo->properties;
-            context->device.features = context->device.vkDeviceInfo->features;
-            context->device.memory = context->device.vkDeviceInfo->memory;
+            context->device.properties = context->device.vkDeviceInfo[i].properties;
+            context->device.features = context->device.vkDeviceInfo[i].features;
+            context->device.memory = context->device.vkDeviceInfo[i].memory;
 
             break;
         }

@@ -13,12 +13,16 @@
         #include "../Hardware/Types/GtVkLDeviceTypes.inl"
         #include "../Hardware/Types/GtVkPDeviceTypes.inl"
 
-        #include "../RendererSubsystem/Types/GtVkCmdBufferTypes.inl"
-        #include "../RendererSubsystem/Types/GtVkFenceTypes.inl"
-        #include "../RendererSubsystem/Types/GtVkFrameBufferTypes.inl"
-        #include "../RendererSubsystem/Types/GtVkImgTypes.inl"
-        #include "../RendererSubsystem/Types/GtVkRenderpassTypes.inl"
-        #include "../RendererSubsystem/Types/GtVkSwapchainTypes.inl"
+        #include "../Subsystems/Types/GtVkCmdBufferTypes.inl"
+        #include "../Subsystems/Types/GtVkFenceTypes.inl"
+        #include "../Subsystems/Types/GtVkFrameBufferTypes.inl"
+        #include "../Subsystems/Types/GtVkRenderpassTypes.inl"
+        #include "../Subsystems/Types/GtVkSwapchainTypes.inl"
+        
+        #include "../Resources/Types/GtVkImgTypes.inl"
+        #include "../Resources/Types/GtVkBufferTypes.inl"
+
+        #include "../Shaders/Types/GtVkObjectShaderTypes.inl"
 
         #define GTVK_CHECK(expr) { \
             GTASSERT(expr == VK_SUCCESS); \
@@ -38,6 +42,9 @@
             GtVkCmdBuffer* graphicsCommandBuffers;
             GtVkFence* inFlightFences;
             GtVkFence** imagesInFlight;
+            GtVkObjectShader objectShader;
+            GtVkBuffer objectVertexBuffer;
+            GtVkBuffer objectIndexBuffer;
 
             GtU32 framebufferWidth;
             GtU32 framebufferHeight;
@@ -47,6 +54,8 @@
 
             GtU64 framebufferSizeGeneration;
             GtU64 framebufferSizeLastGeneration;
+            GtU64 geometryVertexOffset;
+            GtU64 geometryIndexOffset;
 
             GtI32 (*gontiVkFindMemoryIndex)(GtU32 typeFilter, GtU32 propertyFlags);
 

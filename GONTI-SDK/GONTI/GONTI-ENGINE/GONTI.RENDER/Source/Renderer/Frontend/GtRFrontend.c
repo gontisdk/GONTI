@@ -5,10 +5,13 @@
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
 #include "../Backend/GtRBackend.h"
 
-static GontiRendererBackend* backend = 0;
+static GtRendererBackend* backend = 0;
 
-GtB8 gontiRendererInitialize(const char* appName, struct GtVkPlatformState* platState) {
-    backend = gt_allocate(sizeof(GontiRendererBackend), GT_MEM_TAG_RENDERER);
+GtB8 gontiRendererInitialize(GtU64* memoryRequirement, void* state, const char* appName, struct GtVkPlatformState* platState) {
+    *memoryRequirement = sizeof(GtRendererBackend);
+    if (!state) return GtTrue;
+
+    backend = state;
 
     // TODO: make it configurable
     gontiRendererBackendCreate(RENDERER_BACKEND_TYPE_VULKAN, platState, backend);
@@ -29,7 +32,7 @@ GtB8 gontiRendererEndFrame(GtF32 deltaTime) {
     backend->frameNumber++;
     return result;
 }
-GtB8 gontiRendererDrawFrame(GontiRendererPacket* packet) {
+GtB8 gontiRendererDrawFrame(GtRendererPacket* packet) {
     if (gontiRendererBeginFrame(packet->deltaTime)) {
         GtB8 result = gontiRendererEndFrame(packet->deltaTime);
 
@@ -42,9 +45,9 @@ GtB8 gontiRendererDrawFrame(GontiRendererPacket* packet) {
     return GtTrue;
 }
 
-void gontiRendererShutdown() {
+void gontiRendererShutdown(void* state) {
     backend->shutdown();
-    gt_free(backend);
+    backend = 0;
 }
 void gontiRendererOnResized(GtU16 width, GtU16 height) {
     if (backend) {

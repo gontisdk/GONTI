@@ -10,8 +10,8 @@
 
         struct GtVkPlatformState;
 
-        GTAPI GtB8 gontiRendererBackendCreate(GontiRendererBackendType type, struct GtVkPlatformState* platState, GontiRendererBackend* outRendererBackend);
-        GTAPI void gontiRendererBackendDestroy(GontiRendererBackend* rendererBackend);
+        GTAPI GtB8 gontiRendererBackendCreate(GtRendererBackendType type, struct GtVkPlatformState* platState, GtRendererBackend* outRendererBackend);
+        GTAPI void gontiRendererBackendDestroy(GtRendererBackend* rendererBackend);
 
         #endif
 

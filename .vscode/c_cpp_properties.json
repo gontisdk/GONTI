@@ -3,7 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
-                /*TODO: Enter here path to your liblares includes for Llinux*/
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/GONTI-SDK/**",
+                "/usr/include/**",
+                "/usr/local/include/**",
+                "/opt/Vulkan/1.4.335.0/x86_64/include/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -15,7 +19,7 @@
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64",
+            "intelliSenseMode": "linux-clang-x64",
             "browse": {
                 "path": [
                     "${workspaceRoot}",

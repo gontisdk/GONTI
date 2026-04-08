@@ -1,21 +1,24 @@
 #include "GtVkRBackend.h"
 
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
-#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/String/GtString.h>
+#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/CStringTools/GtCStrTools.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Containers/DynamicArray/GtDArray.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Platform/GtPlatform.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Memory/GtMemory.h>
+#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Math/Geometry/Vertices/GtVertexTypes.inl>
 #include "../../Types/GtVkContextTypes.inl"
 #include "../../Platform/GtVkPlatform.h"
 #include "../../Debugger/GtVkDebugger.h"
 #include "../../Hardware/Device/GtVkDevice.h"
-#include "../../RendererSubsystem/Swapchain/GtVkSwapchain.h"
-#include "../../RendererSubsystem/Renderpass/GtVkRenderpass.h"
-#include "../../RendererSubsystem/CommandBuffer/GtVkCmdBuffer.h"
-#include "../../RendererSubsystem/FrameBuffer/GtVkFrameBuffer.h"
-#include "../../RendererSubsystem/SyncObjects/GtVkSyncObjects.h"
-#include "../../RendererSubsystem/Fence/GtVkFence.h"
+#include "../../Subsystems/Swapchain/GtVkSwapchain.h"
+#include "../../Subsystems/Renderpass/GtVkRenderpass.h"
+#include "../../Subsystems/CommandBuffer/GtVkCmdBuffer.h"
+#include "../../Subsystems/FrameBuffer/GtVkFrameBuffer.h"
+#include "../../Subsystems/Sync/SyncObjects/GtVkSyncObjects.h"
+#include "../../Subsystems/Sync/Fence/GtVkFence.h"
 #include "../../Util/GtVkUtil.h"
+#include "../../Shaders/ObjectShader/GtVkObjectShader.h"
+#include "../../Resources/Buffer/GtVkBuffer.h"
 
 static GtVkContext context;
 static const char** requiredExtensions;
@@ -23,9 +26,28 @@ static const char** requiredValidationLayerNames;
 static GtU32 cachedFramebufferWidth = 0;
 static GtU32 cachedFramebufferHeight = 0;
 
+/* TEMPORARY FUNCS */
+
+void __tmp__upload_data_range(GtVkContext* context, VkCommandPool pool, VkFence fence, VkQueue queue, GtVkBuffer* buffer, GtU64 offset, GtU64 size, void* data) {
+    VkBufferUsageFlags flags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+    GtVkBuffer staging;
+    gontiVkBufferCreate(context, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, flags, GtTrue, &staging);
+    gontiVkBufferLoadData(context, &staging, 0, size, 0, data);
+    gontiVkBufferCopyTo(context, pool, fence, queue, staging.handle, 0, buffer->handle, offset, size);
+    gontiVkBufferDestroy(context, &staging);
+}
+
+/* END OF TEMPORARY FUNCS */
+
 /*PRIVATE FUNCS*/
 
 GtI32 gontiVkFindMemoryIndex(GtU32 typeFilter, GtU32 propertyFlags) {
+    if (!context.device.physicalDevice || !context.device.logicalDevice) {
+        GTERROR("Physical or Logical Device is NULL in gontiVkFindMemoryIndex!");
+        return -1;
+    }
+
     VkPhysicalDeviceMemoryProperties memoryProperties;
     vkGetPhysicalDeviceMemoryProperties(context.device.physicalDevice, &memoryProperties);
 
@@ -39,122 +61,69 @@ GtI32 gontiVkFindMemoryIndex(GtU32 typeFilter, GtU32 propertyFlags) {
     return -1;
 }
 
-void gontiVkCreateCommandBuffers() {
-    if (!context.graphicsCommandBuffers) {
-        context.graphicsCommandBuffers = gontiDarrayReserve(GtVkCmdBuffer, context.swapchain.imageCount);
+/* END PRIVATE FUNC */
 
-        for (GtU32 i = 0; i < context.swapchain.imageCount; i++) {
-            gt_zeroMemory(&context.graphicsCommandBuffers[i], sizeof(GtVkCmdBuffer));
-        }
-    }
-
-    for (GtU32 i = 0; i < context.swapchain.imageCount; i++) {
-        if (context.graphicsCommandBuffers[i].handle) {
-            gontiVkCommandBufferFree(
-                &context,
-                context.device.graphicsCommandPool,
-                &context.graphicsCommandBuffers[i]
-            );
-        }
-        
-        gontiVkCommandBufferAllocate(
-            &context,
-            context.device.graphicsCommandPool,
-            GtTrue,
-            &context.graphicsCommandBuffers[i]
-        );
-    }
-
-    GTINFO("Vulkan command buffers created");
-}
-
-void gontiVkRegenerateFramebuffers(GtVkSwapchain* swapchain, GtVkRenderpass* renderpass) {
-    for (GtU32 i = 0; i < swapchain->imageCount; i++) {
-        GTINFO("Vulkan creating framebuffers...");
-
-        // TODO: make this dynamic based on the currently configured attachments
-        GtU32 attachmentsCount = 2;
-        VkImageView attachments[] = {
-            swapchain->views[i],
-            swapchain->depthAttachment.view
-        };
-
-        gontiVkFramebufferCreate(
-            &context,
-            renderpass,
-            context.framebufferWidth,
-            context.framebufferHeight,
-            attachmentsCount,
-            attachments,
-            &context.swapchain.framebuffers[i]
-        );
-    }
-}
-
-GtB8 gontiVkRecreateSwapchain() {
-    if (context.swapchain.recreatingSwapchain) {
-        GTDEBUG("gontiVkRecreateSwapchain called when already recreating. Booting...");
+GtB8 gontiVkRendererBackendRecreateSwapchain(GtVkContext* context) {
+    if (context->swapchain.recreatingSwapchain) {
+        GTDEBUG("gontiVkRecreategontiVkRendererBackendRecreateSwapchain called when already recreating. Booting...");
         return GtFalse;
     } 
 
-    if (context.framebufferWidth == 0 || context.framebufferHeight == 0) {
-        GTDEBUG("gontiVkRecreateSwapchain called when window < 1 in a dimension. Booting...");
+    if (context->framebufferWidth == 0 || context->framebufferHeight == 0) {
+        GTDEBUG("gontiVkRendererBackendRecreateSwapchain called when window < 1 in a dimension. Booting...");
         return GtFalse;
     }
 
-    context.swapchain.recreatingSwapchain = GtTrue;
+    context->swapchain.recreatingSwapchain = GtTrue;
 
-    vkDeviceWaitIdle(context.device.logicalDevice);
+    vkDeviceWaitIdle(context->device.logicalDevice);
 
-    for (GtU32 i = 0; i < context.swapchain.imageCount; i++) {
-        context.imagesInFlight[i] = 0;
+    for (GtU32 i = 0; i < context->swapchain.imageCount; i++) {
+        context->imagesInFlight[i] = 0;
     }
 
     gontiVkDeviceQuerySwapchainSupport(
-        context.device.physicalDevice,
-        context.surface,
-        &context.device.swapchainSupport
+        context->device.physicalDevice,
+        context->surface,
+        &context->device.swapchainSupport
     );
-    gontiVkDeviceDetectDepthFormat(&context);
+    gontiVkDeviceDetectDepthFormat(context);
     gontiVkSwapchainRecreate(
-        &context,
+        context,
         cachedFramebufferWidth,
         cachedFramebufferHeight,
-        &context.swapchain
+        &context->swapchain
     );
 
-    context.framebufferWidth = cachedFramebufferWidth;
-    context.framebufferHeight = cachedFramebufferHeight;
-    context.mainRenderpass.w = context.framebufferWidth;
-    context.mainRenderpass.h = context.framebufferHeight;
+    context->framebufferWidth = cachedFramebufferWidth;
+    context->framebufferHeight = cachedFramebufferHeight;
+    context->mainRenderpass.w = context->framebufferWidth;
+    context->mainRenderpass.h = context->framebufferHeight;
     cachedFramebufferWidth = 0;
     cachedFramebufferHeight = 0;
 
-    context.framebufferSizeLastGeneration = context.framebufferSizeGeneration;
+    context->framebufferSizeLastGeneration = context->framebufferSizeGeneration;
 
-    for (GtU32 i = 0; i < context.swapchain.imageCount; i++) {
-        gontiVkCommandBufferFree(&context, context.device.graphicsCommandPool, &context.graphicsCommandBuffers[i]);
+    for (GtU32 i = 0; i < context->swapchain.imageCount; i++) {
+        gontiVkCommandBufferFree(context, context->device.graphicsCommandPool, &context->graphicsCommandBuffers[i]);
     }
 
-    for (GtU32 i = 0; i < context.swapchain.imageCount; i++) {
-        gontiVkFramebufferDestroy(&context, &context.swapchain.framebuffers[i]);
+    for (GtU32 i = 0; i < context->swapchain.imageCount; i++) {
+        gontiVkFramebufferDestroy(context, &context->swapchain.framebuffers[i]);
     }
 
-    context.mainRenderpass.x = 0;
-    context.mainRenderpass.y = 0;
-    context.mainRenderpass.w = context.framebufferWidth;
-    context.mainRenderpass.h = context.framebufferHeight;
+    context->mainRenderpass.x = 0;
+    context->mainRenderpass.y = 0;
+    context->mainRenderpass.w = context->framebufferWidth;
+    context->mainRenderpass.h = context->framebufferHeight;
 
-    gontiVkRegenerateFramebuffers(&context.swapchain, &context.mainRenderpass);
-    gontiVkCreateCommandBuffers();
+    gontiVkFramebuffersRegenerate(context, &context->swapchain, &context->mainRenderpass);
+    gontiVkCommandBuffersCreate(context);
 
-    context.swapchain.recreatingSwapchain = GtFalse;
+    context->swapchain.recreatingSwapchain = GtFalse;
 
     return GtTrue;
 }
-
-/*PUBLIC FUNCS*/
-
 GtB8 gontiVkRendererBackendInitialize(const char* appName, struct GtVkPlatformState* platState) {
     gt_zeroMemory(&context, sizeof(GtVkContext));
     
@@ -267,18 +236,19 @@ GtB8 gontiVkRendererBackendInitialize(const char* appName, struct GtVkPlatformSt
         GTDEBUG("Vulkan debugger created.");
     #endif
 
-    GTINFO("Creating Vulkan surface...");
+    GTINFO("Creating Vulkan Surface...");
     if (!gontiVkPlatformCreateVulkanSurface(platState, &context)) {
         GTERROR("Failed to create Vulkan surface!");
         return GtFalse;
     } GTINFO("Vulkan surface created.");
 
+    GTINFO("Creating Vulkan Device...");
     if (!gontiVkDeviceCreate(&context)) {
         GTERROR("Failed to create device!");
         return GtFalse;
     }
 
-    GTINFO("Creating Vulkan swapchain...");
+    GTINFO("Creating Vulkan Swapchain...");
     gontiVkSwapchainCreate(&context, context.framebufferWidth, context.framebufferHeight, &context.swapchain);
 
     if (context.swapchain.maxFramesInFlight == 0) {
@@ -289,7 +259,7 @@ GtB8 gontiVkRendererBackendInitialize(const char* appName, struct GtVkPlatformSt
     GTINFO("Creating Vulkan Sync Objects...");
     gontiVkSyncObjectsCreate(&context);
 
-    GTINFO("Creating Vulkan renderpass...");
+    GTINFO("Creating Vulkan Renderpass...");
     gontiVkRenderpassCreate(
         &context, &context.mainRenderpass,
         0, 0, context.framebufferWidth, context.framebufferHeight,
@@ -299,12 +269,64 @@ GtB8 gontiVkRendererBackendInitialize(const char* appName, struct GtVkPlatformSt
     );
 
     context.swapchain.framebuffers = gontiDarrayReserve(GtVkFramebuffer, context.swapchain.imageCount);
-    gontiVkRegenerateFramebuffers(&context.swapchain, &context.mainRenderpass);
+    gontiVkFramebuffersRegenerate(&context, &context.swapchain, &context.mainRenderpass);
 
-    GTINFO("Creating Vulkan command buffers...");
-    gontiVkCreateCommandBuffers();
+    GTINFO("Creating Vulkan Command Buffers...");
+    gontiVkCommandBuffersCreate(&context);
 
-    context.currentFrame = 0;
+    GTINFO("Creating Vulkan Object Shader...");
+    if (!gontiVkObjectShaderCreate(&context, &context.objectShader)) {
+        GTERROR("Error loading built-in basic_lighting shader.");
+        return GtFalse;
+    }
+
+    GTINFO("Creating Vulkan Buffers...");
+    gontiVkBuffersCreate(&context);
+
+    /*
+    * TODO: TEMPORARY TEST CODE
+    */ 
+    const GtU32 vert_count = 4;
+    GtVertex3D verts[vert_count];
+    gt_zeroMemory(verts, sizeof(GtVertex3D) * vert_count); 
+
+    verts[0].position.x = 0.0;
+    verts[0].position.y = -0.5;
+
+    verts[1].position.x = 0.5;
+    verts[1].position.y = 0.5;
+
+    verts[2].position.x = 0.0;
+    verts[2].position.y = 0.5;
+
+    verts[3].position.x = 0.5;
+    verts[3].position.y = -0.5;
+
+    const GtU32 index_count = 6;
+    GtU32 indices[index_count];
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = 2;
+    indices[3] = 0;
+    indices[4] = 3;
+    indices[5] = 1;
+
+    __tmp__upload_data_range(
+        &context, context.device.graphicsCommandPool, 0,
+        context.device.graphicsQueue, &context.objectVertexBuffer, 0,
+        sizeof(GtVertex3D) * vert_count, verts
+    );
+    __tmp__upload_data_range(
+        &context, context.device.graphicsCommandPool, 0,
+        context.device.graphicsQueue, &context.objectIndexBuffer, 0,
+        sizeof(GtU32) * index_count, indices
+    );
+    /* 
+    * TODO: END TEMPORARY CODE
+    */
+
+    // NOTE: temporaty removed for tests (looks like usless now)
+    //context.currentFrame = 0;
 
     for (GtU8 i = 0; i < context.swapchain.maxFramesInFlight; i++) {
         if (context.inFlightFences[i].handle == VK_NULL_HANDLE) {
@@ -354,7 +376,7 @@ GtB8 gontiVkRendererBackendBeginFrame(GtF32 deltaTime) {
             return GtFalse;
         }
 
-        if (!gontiVkRecreateSwapchain()) {
+        if (!gontiVkRendererBackendRecreateSwapchain(&context)) {
             GTERROR("Recreating swapchain failed.");
             return GtFalse;
         }
@@ -389,7 +411,7 @@ GtB8 gontiVkRendererBackendBeginFrame(GtF32 deltaTime) {
 
     if (acquireResult == VK_ERROR_OUT_OF_DATE_KHR) {
         GTINFO("Swapchain out of date, recreating...");
-        if (!gontiVkRecreateSwapchain()) {
+        if (!gontiVkRendererBackendRecreateSwapchain(&context)) {
             GTERROR("Failed to recreate swapchain");
             return GtFalse;
         }
@@ -451,6 +473,19 @@ GtB8 gontiVkRendererBackendBeginFrame(GtF32 deltaTime) {
         &context.mainRenderpass,
         context.swapchain.framebuffers[context.imageIndex].handle
     );
+
+    /*
+    * TODO: TEMPORARY TEST CODE
+    */ 
+    gontiVkObjectShaderUse(&context, &context.objectShader);
+
+    VkDeviceSize offsets[1] = {0};
+    vkCmdBindVertexBuffers(commandBuffer->handle, 0, 1, &context.objectVertexBuffer.handle, (VkDeviceSize*)offsets);
+    vkCmdBindIndexBuffer(commandBuffer->handle, context.objectIndexBuffer.handle, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdDrawIndexed(commandBuffer->handle, 6, 1, 0, 0,0);
+    /* 
+    * TODO: END TEMPORARY CODE
+    */
 
     return GtTrue;
 }
@@ -528,6 +563,8 @@ GtB8 gontiVkRendererBackendEndFrame(GtF32 deltaTime) {
 }
 
 void gontiVkRendererBackendShutdown() {
+    vkDeviceWaitIdle(context.device.logicalDevice);
+
     if (requiredExtensions) {
         gontiDarrayDestroy(requiredExtensions);
         requiredExtensions = 0;
@@ -545,6 +582,12 @@ void gontiVkRendererBackendShutdown() {
         func(context.instance, context.debugMessenger, context.allocator);
     }
     #endif
+
+    GTINFO("Destroying vulkan buffers...");
+    gontiVkBuffersDestroy(&context);
+
+    GTINFO("Destroying vulkan object shader...");
+    gontiVkObjectShaderDestroy(&context, &context.objectShader);
 
     GTINFO("Destroying Vulkan Sync Objects...");
     gontiVkSyncObjectsDestroy(&context);

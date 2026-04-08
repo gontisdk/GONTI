@@ -4,7 +4,7 @@
 
     #include <Windows.h>
     #include <windowsx.h>
-    #include "../String/GtString.h"
+    #include "../CStringTools/GtCStrTools.h"
 
     static GtF64 clockFrequency;
 

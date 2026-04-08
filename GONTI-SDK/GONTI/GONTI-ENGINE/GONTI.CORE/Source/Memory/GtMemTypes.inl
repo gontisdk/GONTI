@@ -10,7 +10,7 @@
         typedef enum GtMemTag {
             GT_MEM_TAG_UNKOWN,
             GT_MEM_TAG_ARRAY,
-            GT_MEM_TAG_ARRAYEX,
+            GT_MEM_TAG_LINEAR_ALLOCATOR,
             GT_MEM_TAG_DARRAY,
             GT_MEM_TAG_DARRAYEX,
             GT_MEM_TAG_DICT,
@@ -35,11 +35,6 @@
 
             GT_MEM_TAG_MAX_TAGS
         } GtMemTag;
-
-        struct GtMemStats {
-            GtU64 totalAllocatedCount;
-            GtU64 taggedAllocations[GT_MEM_TAG_MAX_TAGS];
-        };
 
         typedef struct GtAllocationHeader {
             GtU64 size;

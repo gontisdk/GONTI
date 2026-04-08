@@ -1,7 +1,7 @@
 #include "GtVkDevice.h"
 
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
-#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/String/GtString.h>
+#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/CStringTools/GtCStrTools.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Memory/GtMemory.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Containers/DynamicArray/GtDArray.h>
 
@@ -34,11 +34,10 @@ GtB8 gontiVkDeviceCreate(GtVkContext* context) {
 }
 GtB8 gontiVkDeviceDetectDepthFormat(GtVkContext* context) {
     const GtU64 candidateCount = 3;
-    VkFormat candidates[candidateCount] = {
-        VK_FORMAT_D32_SFLOAT,
-        VK_FORMAT_D32_SFLOAT_S8_UINT,
-        VK_FORMAT_D24_UNORM_S8_UINT
-    };
+    VkFormat candidates[candidateCount];
+    candidates[0] = VK_FORMAT_D32_SFLOAT;
+    candidates[1] = VK_FORMAT_D32_SFLOAT_S8_UINT;
+    candidates[2] = VK_FORMAT_D24_UNORM_S8_UINT;
 
     GtU32 flags = VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
 

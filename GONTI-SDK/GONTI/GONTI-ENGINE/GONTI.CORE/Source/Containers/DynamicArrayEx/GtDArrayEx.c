@@ -2,7 +2,7 @@
 
 #include "../../Memory/GtMemory.h"
 #include "../../Logging/GtLogger.h"
-#include "../../String/GtString.h"
+#include "../../CStringTools/GtCStrTools.h"
 
 /*
 * DYNAMICARRAYEX

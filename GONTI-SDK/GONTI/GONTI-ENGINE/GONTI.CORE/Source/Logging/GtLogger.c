@@ -7,15 +7,28 @@
 #include "../Platform/GtPlatform.h"
 #include "../Memory/GtMemory.h"
 
+typedef struct GtLogSysState {
+    GtB8 initialized;
+} GtLogSysState;
+static GtLogSysState* statePtr;
+
 /*B8*/
-GtB8 gontiLoggerInitializeLogging() {
+GtB8 gontiLoggerInitializeLogging(GtU64* memoryRequirement, void* state) {
+    *memoryRequirement = sizeof(GtLogSysState);
+    if (!state) return GtTrue;
+
+    statePtr = state;
+    statePtr->initialized = GtTrue;
+
     // TODO: Create log file
     return GtTrue;
 }
 
 /*VOID*/
-void gontiLoggerShutdownLogging() {
+void gontiLoggerShutdown(void* state) {
     // TODO: Cleanup logging/write queued entries
+
+    statePtr = 0;
 }
 void gontiLoggerLogOutput(GtLogLvl level, const char* message, ...) {
     const char* levelStrings[6] = {

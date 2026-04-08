@@ -80,7 +80,7 @@ void* _gontiDarrayPopAt(void* array, GtU64 index, void* dest) {
     GtU64 stride = gontiDarrayStride(array);
 
     if (index >= length) {
-        GTERROR("Index outside the bounds of this array! Length: %i, Index %index", length, index);
+        GTERROR("Index outside the bounds of this array! Length: %i, Index %i", length, index);
         return array;
     }
 
@@ -91,7 +91,7 @@ void* _gontiDarrayPopAt(void* array, GtU64 index, void* dest) {
         gt_copyMemory(
             (void*)(addr + (index * stride)),
             (void*)(addr + ((index + 1) * stride)),
-            stride * (length - index)
+            stride * (length - index - 1)
         );
     }
 
@@ -104,7 +104,7 @@ void* _gontiDarrayInsertAt(void* array, GtU64 index, void* valuePtr) {
     GtU64 stride = gontiDarrayStride(array);
 
     if (index > length) {
-        GTERROR("Index outside the bounds of this array! Length: %i, Index %index", length, index);
+        GTERROR("Index outside the bounds of this array! Length: %i, Index %i", length, index);
         return array;
     }
 
@@ -118,7 +118,7 @@ void* _gontiDarrayInsertAt(void* array, GtU64 index, void* valuePtr) {
         gt_copyMemory(
             (void*)(addr + ((index + 1) * stride)),
             (void*)(addr + (index * stride)),
-            stride * (length - index)
+            stride * (length - index - 1)
         );
     }
 

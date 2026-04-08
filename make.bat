@@ -6,8 +6,8 @@ cls
 
 echo "What wanna you do:"
 echo "1 or b - Build engine"
-echo "2 or t - Build testbed"
-echo "3 or d - Debug testbed"
+echo "2 or tb - Build testbed"
+echo "3 or ts - Build tests"
 set /p userInput=Enter command (Build/Testbed/Debug): 
 
 if /i "%userInput%"=="build" (
@@ -18,34 +18,34 @@ if /i "%userInput%"=="build" (
     goto build
 ) else if /i "%userInput%"=="testbed" (
     goto testbed
-) else if /i "%userInput%"=="t" (
+) else if /i "%userInput%"=="tb" (
     goto testbed
 ) else if /i "%userInput%"=="2" (
     goto testbed
-) else if /i "%userInput%"=="debug" (
-    goto debug
-) else if /i "%userInput%"=="d" (
-    goto debug
+) else if /i "%userInput%"=="tests" (
+    goto tests
+) else if /i "%userInput%"=="ts" (
+    goto tests
 ) else if /i "%userInput%"=="3" (
-    goto debug
+    goto tests
 ) else (
     echo Invalid value exiting...
     goto end
 )
 
 :build
-cd GONTI-SDK/_Build/_Scripts/win32/
+cd GONTI-SDK/Build/Scripts/win32/
 start main.bat
 goto end
 
-:debug
-cd Tests/BuildScripts/win/
-call Debug.bat
+:testbed
+rem cd Testbed/BuildScripts/win/
+call Testbed/BuildScripts/win/build.bat
 goto end
 
-:testbed
-cd Tests/BuildScripts/win/
-call makeTestbed.bat
+:tests
+rem cd Tests/BuildScripts/win/
+call Tests/BuildScripts/win/build.bat
 goto end
 
 :end

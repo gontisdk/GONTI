@@ -4,7 +4,7 @@
 #include <math.h>
 
 #include "../../../Memory/GtMemory.h"
-#include "../../../String/GtString.h"
+#include "../../../CStringTools/GtCStrTools.h"
 #include "../../Algorithms/Arithmetic/Karatsuba/GtKaratsuba.h"
 #include "../../../Logging/GtLogger.h"
 

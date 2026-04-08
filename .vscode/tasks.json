@@ -2,17 +2,29 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Make.bat",
+            "label": "Run Make",
             "type": "shell",
+
             "windows": {
                 "command": "${workspaceFolder}/make.bat",
-            },
-            "options": {
-                "shell": {
-                    "executable": "cmd.exe",
-                    "args": ["/c"]
+                "options": {
+                    "shell": {
+                        "executable": "cmd.exe",
+                        "args": ["/c"]
+                    }
                 }
             },
+
+            "linux": {
+                "command": "${workspaceFolder}/make.sh",
+                "options": {
+                    "shell": {
+                        "executable": "/bin/bash",
+                        "args": ["-c"]
+                    }
+                }
+            },
+
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -29,10 +41,10 @@
             "label": "Run Post-Build",
             "type": "shell",
             "windows": {
-                "command": "${workspaceFolder}/Tests/ShaderScripts/win/PostBuild.bat"
+                "command": "${workspaceFolder}/Testbed/ShaderScripts/win/PostBuild.bat"
             },
             "linux": {
-                "command": "${workspaceFolder}/Tests/ShaderScripts/linux/PostBuild.sh"
+                "command": "${workspaceFolder}/Testbed/ShaderScripts/linux/PostBuild.sh"
             },
             "options": {
                 "cwd": "${workspaceFolder}"

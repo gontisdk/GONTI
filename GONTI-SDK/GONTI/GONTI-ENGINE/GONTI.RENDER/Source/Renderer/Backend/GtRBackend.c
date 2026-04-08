@@ -4,7 +4,7 @@
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
 #include "../../Config/SetupGraphicBackend/GtUsrSetGraphBackend.h"
 
-GtB8 gontiRendererBackendCreate(GontiRendererBackendType type, struct GtVkPlatformState* platState, GontiRendererBackend* outRendererBackend) {
+GtB8 gontiRendererBackendCreate(GtRendererBackendType type, struct GtVkPlatformState* platState, GtRendererBackend* outRendererBackend) {
     outRendererBackend->GtVkPlatformState = platState;
 
     if (type == RENDERER_BACKEND_TYPE_VULKAN) {
@@ -59,7 +59,7 @@ GtB8 gontiRendererBackendCreate(GontiRendererBackendType type, struct GtVkPlatfo
     return GtFalse;
 }
 
-void gontiRendererBackendDestroy(GontiRendererBackend* rendererBackend) {
+void gontiRendererBackendDestroy(GtRendererBackend* rendererBackend) {
     rendererBackend->initialize = 0;
     rendererBackend->shutdown = 0;
     rendererBackend-> beginFrame = 0;

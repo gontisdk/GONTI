@@ -56,7 +56,7 @@
 
 		/*DEFINES*/
 
-		#define vector(...) gontiVecNewVector(GT_NUMARGS(GtF32, __VA_ARGS__), ##__VA_ARGS__)
+		#define GtVector(...) gontiVecNewVector(GT_NUMARGS(GtF32, __VA_ARGS__), ##__VA_ARGS__)
 
 #ifdef __cplusplus
 	}

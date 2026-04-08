@@ -17,32 +17,35 @@ typedef struct GtEventCodeEntry {
 
 typedef struct GtEventSystemState {
     GtEventCodeEntry registered[MAX_GT_EVENT_CODE];
+    GtB8 isInitialized;
 }GtEventSystemState;
 
-static GtB8 isInitialized = GtFalse;
-static GtEventSystemState state;
+static GtEventSystemState* statePtr;
 
 /*BOOL*/
-GtB8 gontiEventInitialize() {
-    if (isInitialized == GtTrue) return GtFalse;
+GtB8 gontiEventInitialize(GtU64* memoryRequirement, void* state) {
+    *memoryRequirement = sizeof(GtEventSystemState);
+    if (!state) return GtTrue;
 
-    isInitialized = GtFalse;
-    gt_zeroMemory(&state, sizeof(GtEventSystemState));
+    statePtr = state;
+    if (statePtr->isInitialized == GtTrue) return GtFalse;
 
-    isInitialized = GtTrue;
+    statePtr->isInitialized = GtFalse;
+    gt_zeroMemory(statePtr, sizeof(GtEventSystemState));
 
+    statePtr->isInitialized = GtTrue;
     GTINFO("Event system initialized");
     return GtTrue;
 }
 GtB8 gontiEventRegister(GtU16 code, void* listener, GtOnEventFN onEvent) {
-    if (isInitialized == GtFalse) return GtFalse;
+    if (!statePtr || statePtr->isInitialized == GtFalse) return GtFalse;
 
-    if (state.registered[code].events == 0) state.registered[code].events = gontiDarrayCreate(GtRegisteredEvent);
+    if (statePtr->registered[code].events == 0) statePtr->registered[code].events = gontiDarrayCreate(GtRegisteredEvent);
 
-    GtU64 registeredCount = gontiDarrayLength(state.registered[code].events);
+    GtU64 registeredCount = gontiDarrayLength(statePtr->registered[code].events);
 
     for (GtU64 i = 0; i < registeredCount; i++) {
-        if (state.registered[code].events[i].listener == listener) {
+        if (statePtr->registered[code].events[i].listener == listener) {
             GTWARN("TODO: WARN MESSAGE HERE");
             return GtFalse;
         }
@@ -51,26 +54,26 @@ GtB8 gontiEventRegister(GtU16 code, void* listener, GtOnEventFN onEvent) {
     GtRegisteredEvent event;
     event.listener = listener;
     event.callback = onEvent;
-    gontiDarrayPush(state.registered[code].events, event);
+    gontiDarrayPush(statePtr->registered[code].events, event);
 
     return GtTrue;
 }
 GtB8 gontiEventUnregister(GtU16 code, void* listener, GtOnEventFN onEvent) {
-    if (isInitialized == GtFalse) return GtFalse;
+    if (!statePtr || statePtr->isInitialized == GtFalse) return GtFalse;
 
-    if (state.registered[code].events == 0) {
+    if (statePtr->registered[code].events == 0) {
         GTWARN("TODO: WARN MESSAGE HERE");
         return GtFalse;
     }
 
-    GtU64 registeredCount = gontiDarrayLength(state.registered[code].events);
+    GtU64 registeredCount = gontiDarrayLength(statePtr->registered[code].events);
 
     for (GtU64 i = 0; i < registeredCount; i++) {
-        GtRegisteredEvent e = state.registered[code].events[i];
+        GtRegisteredEvent e = statePtr->registered[code].events[i];
 
         if (e.listener == listener && e.callback == onEvent) {
             GtRegisteredEvent poppedEvent;
-            gontiDarrayPopAt(state.registered[code].events, i, &poppedEvent);
+            gontiDarrayPopAt(statePtr->registered[code].events, i, &poppedEvent);
 
             return GtTrue;
         }
@@ -79,14 +82,14 @@ GtB8 gontiEventUnregister(GtU16 code, void* listener, GtOnEventFN onEvent) {
     return GtFalse;
 }
 GtB8 gontiEventFire(GtU16 code, void* sender, GtEventContext context) {
-    if (isInitialized == GtFalse) return GtFalse;
+    if (!statePtr || statePtr->isInitialized == GtFalse) return GtFalse;
 
-    if (state.registered[code].events == 0) return GtFalse;
+    if (statePtr->registered[code].events == 0) return GtFalse;
 
-    GtU64 registeredCount = gontiDarrayLength(state.registered[code].events);
+    GtU64 registeredCount = gontiDarrayLength(statePtr->registered[code].events);
 
     for (GtU64 i = 0; i < registeredCount; i++) {
-        GtRegisteredEvent e = state.registered[code].events[i];
+        GtRegisteredEvent e = statePtr->registered[code].events[i];
 
         if (e.callback == NULL) continue;
 
@@ -99,13 +102,13 @@ GtB8 gontiEventFire(GtU16 code, void* sender, GtEventContext context) {
 }
 
 /*VOID*/
-void gontiEventShutdown() {
+void gontiEventShutdown(void* state) {
     for (GtU16 i = 0; i < MAX_GT_EVENT_CODE; i++) {
-        if (state.registered[i].events != NULL) {
-            gontiDarrayDestroy(state.registered[i].events);
-            state.registered[i].events = NULL;
+        if (statePtr->registered[i].events != NULL) {
+            gontiDarrayDestroy(statePtr->registered[i].events);
+            statePtr->registered[i].events = NULL;
         }
     }
 
-    isInitialized = GtFalse;
+    statePtr->isInitialized = GtFalse;
 }

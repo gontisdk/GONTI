@@ -3,7 +3,7 @@
 #if GTPLATFORM_WINDOWS
 
 #include <vulkan/vulkan_win32.h>
-#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/String/GtString.h>
+#include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/CStringTools/GtCStrTools.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Platform/GtPlatform.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Logging/GtLogger.h>
 #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Containers/DynamicArray/GtDArray.h>
@@ -12,34 +12,36 @@
 static LARGE_INTEGER startTime;
 
 GtB8 gontiVkPlatformStartup(
-    GtVkPlatformState* platState,
+    GtU64* memoryRequirement, 
+    void* platState,
     const char* windowName,
     const char* windowClass,
     GtI32 x,
     GtI32 y,
     GtI32 width,
     GtI32 height
-) {    
-    platState->internalState = &platState->gontiVkInternalStateWin32;
-    GtVkInternalStateWIN* state = (GtVkInternalStateWIN*)platState->internalState;
-    state->hInstance = GetModuleHandleA(0);
-    platState->vkInternalState = gt_allocate(sizeof(GtVkInternalStateVK), GT_MEM_TAG_RENDERER);
+) {
+    *memoryRequirement = sizeof(GtVkPlatformState);
+    if (!platState) return GtTrue;
 
-    if (state->win32_process_message == NULL) {
+    GtVkPlatformState* state = (GtVkPlatformState*)platState;
+    state->gontiVkInternalStateWin32.hInstance = GetModuleHandleA(0);
+
+    if (state->gontiVkInternalStateWin32.win32_process_message == NULL) {
         GTFATAL("win32_process_message must match WndProc signature. Without it, message handling will fail.");
         gontiVkPlatformShutdown(platState);
         return GtFalse;
 
     }
 
-    HICON icon = LoadIcon(state->hInstance, IDI_APPLICATION);
+    HICON icon = LoadIcon(state->gontiVkInternalStateWin32.hInstance, IDI_APPLICATION);
     WNDCLASSA wc;
     gt_setMemory(&wc, 0, sizeof(wc));
     wc.style = CS_DBLCLKS;
-    wc.lpfnWndProc = state->win32_process_message;
+    wc.lpfnWndProc = state->gontiVkInternalStateWin32.win32_process_message;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance = state->hInstance;
+    wc.hInstance = state->gontiVkInternalStateWin32.hInstance;
     wc.hIcon = icon;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = NULL; // Transparent
@@ -87,7 +89,7 @@ GtB8 gontiVkPlatformStartup(
         windowHeight,
         0,
         0,
-        state->hInstance,
+        state->gontiVkInternalStateWin32.hInstance,
         0
     );
 
@@ -98,12 +100,12 @@ GtB8 gontiVkPlatformStartup(
         return GtFalse;
     }
 
-    state->hwnd = handle;
+    state->gontiVkInternalStateWin32.hwnd = handle;
 
     GtB32 shouldActive = 1;
     GtI32 showWindowCommandFlags = shouldActive ? SW_SHOW : SW_SHOWNOACTIVATE;
 
-    ShowWindow(state->hwnd, showWindowCommandFlags);
+    ShowWindow(state->gontiVkInternalStateWin32.hwnd, showWindowCommandFlags);
 
     LARGE_INTEGER frequency;
     QueryPerformanceFrequency(&frequency);
@@ -113,7 +115,7 @@ GtB8 gontiVkPlatformStartup(
     return GtTrue;
 }
 
-GtB8 gontiVkPlatformPumpMessage(GtVkPlatformState* platState) {
+GtB8 gontiVkPlatformPumpMessage(void* platState) {
     MSG message;
     while (PeekMessageA(&message, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&message);
@@ -124,37 +126,32 @@ GtB8 gontiVkPlatformPumpMessage(GtVkPlatformState* platState) {
 }
 
 GtB8 gontiVkPlatformCreateVulkanSurface(GtVkPlatformState* platState, GtVkContext* context) {
-    GtVkInternalStateWIN* state = (GtVkInternalStateWIN*)platState->internalState;
+    GtVkInternalStateWIN* state = &platState->gontiVkInternalStateWin32;
 
     VkWin32SurfaceCreateInfoKHR createInfo = {VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
     createInfo.hinstance = state->hInstance;
     createInfo.hwnd = state->hwnd;
 
-    VkResult result = vkCreateWin32SurfaceKHR(context->instance, &createInfo, context->allocator, &platState->vkInternalState->surface);
+    VkResult result = vkCreateWin32SurfaceKHR(context->instance, &createInfo, context->allocator, &platState->vkInternalState.surface);
     if (result != VK_SUCCESS) {
         GTFATAL("Vulkan surface creation failed!");
         return GtFalse;
     }
 
-    context->surface = platState->vkInternalState->surface;
+    context->surface = platState->vkInternalState.surface;
     return GtTrue;
 }
 
-void gontiVkPlatformShutdown(GtVkPlatformState* platState) {
-    GtVkInternalStateWIN* state = (GtVkInternalStateWIN*)platState->internalState;
+void gontiVkPlatformShutdown(void* platState) {
+    GtVkPlatformState* state = (GtVkPlatformState*)platState;
     
-    if (state->hwnd) {
-        DestroyWindow(state->hwnd);
-        state->hwnd = 0;
+    if (state->gontiVkInternalStateWin32.hwnd) {
+        DestroyWindow(state->gontiVkInternalStateWin32.hwnd);
+        state->gontiVkInternalStateWin32.hwnd = 0;
     }
     
-    if (platState->internalState) {
-        platState->internalState = 0;
-    }
-
-    if (platState->vkInternalState) {
-        gt_free(platState->vkInternalState);
-        platState->vkInternalState = 0;
+    if (state->internalState) {
+        state->internalState = 0;
     }
 }
 

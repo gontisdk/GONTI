@@ -7,16 +7,16 @@
 
         #include <GONTI/GONTI-ENGINE/GONTI.CORE/Source/Defines/GtDefines.h>
 
-        typedef enum GontiRendererBackendType {
+        typedef enum GtRendererBackendType {
             RENDERER_BACKEND_TYPE_VULKAN,
 
             RENDERER_BACKEND_TYPE_OPENGL,
 
             RENDERER_BACKEND_TYPE_DIRECTX_11,
             RENDERER_BACKEND_TYPE_DIRECTX_12
-        }GontiRendererBackendType;
+        }GtRendererBackendType;
 
-        typedef struct GontiRendererBackend {
+        typedef struct GtRendererBackend {
             struct GtVkPlatformState* GtVkPlatformState;
             GtU64 frameNumber;
             GtB8 (*initialize)(const char* appName, struct GtVkPlatformState* platState);
@@ -24,11 +24,12 @@
             void (*resized)(GtU16 width, GtU16 height);
             GtB8 (*beginFrame)(GtF32 deltaTime);
             GtB8 (*endFrame)(GtF32 deltaTime);
-        }GontiRendererBackend;
+        }GtRendererBackend;
 
-        typedef struct GontiRendererPacket {
+        typedef struct GtRendererPacket {
             GtF32 deltaTime;
-        }GontiRendererPacket;
+            GtF32 interpolation;
+        }GtRendererPacket;
 
 #ifdef __cplusplus 
     }

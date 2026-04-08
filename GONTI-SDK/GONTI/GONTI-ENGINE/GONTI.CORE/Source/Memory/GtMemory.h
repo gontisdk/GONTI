@@ -48,17 +48,22 @@
             } \
         } while(0)
 
-        /* CONST CHAR** */
-        GTAPI const char** __gontiGetMemoryTagStringsArr();
-
+        /* B8 */
+        GTAPI GtB8 gontiMemoryCheckLeaks();
+        
         /* CHAR* */
         GTAPI char* gontiGetMemoryUsageStr();
 
+        /* U64 */
+        GTAPI GtU64 gontiMemoryGetAllocCount();
+        
         /*VOID*/
-        GTAPI void gontiInitializeMemory();
-        GTAPI void gontiShutdownMemory();
-
+        GTAPI void gontiMemoryInitialize(GtU64* memoryRequirement, void* state);
+        GTAPI void gontiMemoryShutdown(void* state);
         GTAPI void __gontiMemoryFree(void* block);
+        
+        /* CONST CHAR** */
+        GTAPI const char** __gontiGetMemoryTagStringsArr();
 
         /* VOID* */
         GTAPI void* __gontiMemoryAllocate(GtU64 size, GtMemTag memTag);
