@@ -1,38 +1,18 @@
 #!/bin/bash
+set -e
+echo "Building GONTI-ENGINE parts..."
 
-if command -v tree &> /dev/null; then
-    tree -a --noreport --charset=ascii > tree.txt
-fi
+echo "Building GONTI.CORE..."
+make -f "Build/Scripts/linux/GONTI/GONTI-ENGINE/Makefile.GONTI.CORE.linux.mak" all
 
-clear
+echo "Building GONTI.RENDER.VK..."
+make -f "Build/Scripts/linux/GONTI/GONTI-ENGINE/Makefile.GONTI.RENDER.VK.linux.mak" all
 
-echo "What do you want to do?"
-echo "1 or b - Build engine"
-echo "2 or t - Build testbed"
-echo "3 or d - Debug testbed"
-read -p "Enter command (Build/Testbed/Debug): " userInput
+echo "Building GONTI.RENDER..."
+make -f "Build/Scripts/linux/GONTI/GONTI-ENGINE/Makefile.GONTI.RENDER.linux.mak" all
 
-userInput=$(echo "$userInput" | tr '[:upper:]' '[:lower:]')
+echo "Building GONTI.RUNTIME..."
+make -f "Build/Scripts/linux/GONTI/GONTI-ENGINE/Makefile.GONTI.RUNTIME.linux.mak" all
 
-case "$userInput" in
-  "build" | "b" | "1")
-    # Build engine
-    cd GONTI-SDK/Build/Scripts/linux/ || exit
-    ./main.sh
-    ;;
-  "testbed" | "t" | "2")
-    # Build testbed
-    bash -c "cd Testbed/BuildScripts/linux/ && ./build.sh"
-    ;;
-  "debug" | "d" | "3")
-    # Debug testbed
-    cd Testbed/BuildScripts/linux/ || exit
-    ./Debug.sh
-    ;;
-  *)
-    echo "Invalid value, exiting..."
-    exit 0
-    ;;
-esac
-
-exit 0
+echo "---------------------------------------"
+echo "All assemblies built successfully."
