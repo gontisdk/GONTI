@@ -1,0 +1,23 @@
+GONTI-RENDER -> GONTI-RENDER-VK - NOTICE
+
+Copyright (C) 2026 OXlatorty
+
+This collection of modules is part of the GONTI SDK.
+
+This library is free software: you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public License
+version 3 (LGPL-3.0) as published by the Free Software Foundation.
+
+Author:
+  GONTI Project Contributors
+
+Contact:
+  oxlatorty0@gmail.com
+
+Notice:
+  This notice applies to the entire GONTI-RENDER-VK collection. Individual
+  modules may evolve over time (files or submodules may be added, 
+  removed, or renamed), but the licensing and authorship information 
+  remains valid for the collection as a whole.
+
+See the LICENSE files in each module for the full license text.
